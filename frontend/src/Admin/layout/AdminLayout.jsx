@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import { useUI } from '../../common/UIContext';
+
 
 export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const location = useLocation();
 
+
+
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Close mobile sidebar on route change
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
+
+  // State managed globally via UIContext in Sidebar component
+
 
   const authUser = JSON.parse(localStorage.getItem('user'));
-  const SIDEBAR_W = isMobile ? 0 : (collapsed ? 68 : 220);
+  const SIDEBAR_W = isMobile ? 0 : (collapsed ? 80 : 280);
+
 
   return (
     <>
@@ -65,9 +68,8 @@ export default function AdminLayout() {
         collapsed={collapsed} 
         onToggle={() => setCollapsed(p => !p)} 
         isMobile={isMobile}
-        mobileOpen={mobileOpen}
-        setMobileOpen={setMobileOpen}
       />
+
 
       <main className="admin-main" style={{ marginLeft: SIDEBAR_W }}>
         <div className="admin-content">

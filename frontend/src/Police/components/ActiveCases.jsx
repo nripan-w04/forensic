@@ -205,20 +205,20 @@ export default function ActiveCases() {
                    <td style={{ textAlign: 'right', paddingRight: 22 }}>
                       <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
                         <button onClick={() => setViewingDetails(c)} style={{ background: 'transparent', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#34d399', cursor: 'pointer', transition: 'all 0.2s' }} title="View Progress">
-                           <Activity size={12} />
+                           <Activity size={20} />
                         </button>
                         {c.status === 'REPORT_READY' && (
                           <button onClick={() => { setInvestigatingItem(c); setInvestigationData({ notes: c.investigationNotes || '', suspects: c.suspects?.join(', ') || '' }); }} style={{ background: 'transparent', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#d8b4fe', cursor: 'pointer', transition: 'all 0.2s', fontSize: 10, fontFamily: "'Share Tech Mono', monospace" }} title="Update Investigation">
-                             <Eye size={12} style={{ marginRight: 4 }} /> REVIEW
+                             <Eye size={20} style={{ marginRight: 4 }} /> <span className='text-xs'>REVIEW</span>
                           </button>
                         )}
                         {c.status !== 'CLOSED' && c.status !== 'FILED_IN_COURT' && (
                           <>
                             <button onClick={() => setEditingCase(c)} style={{ background: 'transparent', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', cursor: 'pointer', transition: 'all 0.2s' }} title="Edit Case">
-                               <Edit size={12} />
+                               <Edit size={20} />
                             </button>
                             <button onClick={() => handleDelete(c._id)} style={{ background: 'transparent', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', cursor: 'pointer', transition: 'all 0.2s' }} title="Delete Case">
-                               <Trash2 size={12} />
+                               <Trash2 size={20} />
                             </button>
                           </>
                         )}

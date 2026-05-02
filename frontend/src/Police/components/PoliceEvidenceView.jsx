@@ -62,18 +62,18 @@ export default function PoliceEvidenceView() {
                     <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#3b82f6', marginTop: 4 }}>Case: {e.caseId}</div>
                   </td>
                   <td>
-                    <div style={{ display: 'inline-block', padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 2, fontFamily: "'Share Tech Mono', monospace", fontSize: 9, color: '#a1a1aa', marginBottom: 4, textTransform: 'uppercase' }}>{e.type}</div>
-                    <div style={{ fontSize: 12, color: '#d4d4d8', maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.description}</div>
+                    <div style={{ display: 'inline-block', padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 2, fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: '#a1a1aa', marginBottom: 4, textTransform: 'uppercase' }}>{e.type}</div>
+                    <div style={{ fontSize: 15, color: '#d4d4d8', maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.description}</div>
                   </td>
                   <td>
-                    <div style={{ fontSize: 13, color: '#e4e4e7' }}>{e.collectedBy}</div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 9, color: '#71717a', marginTop: 4 }}>{e.collectedDate}</div>
+                    <div style={{ fontSize: 15, color: '#e4e4e7' }}>{e.collectedBy}</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#71717a', marginTop: 4 }}>{e.collectedDate}</div>
                   </td>
                   <td>
                     <div
                       style={{
                         display: 'inline-block',
-                        padding: '4px 8px', borderRadius: 3, fontFamily: "'Share Tech Mono', monospace", fontSize: 10, textTransform: 'uppercase',
+                        padding: '4px 8px', borderRadius: 3, fontFamily: "'Share Tech Mono', monospace", fontSize: 14, textTransform: 'uppercase',
                         background: e.status === 'Logged' ? 'rgba(59,130,246,0.1)' : e.status === 'In Lab' ? 'rgba(251,191,36,0.1)' : e.status === 'Analyzed' ? 'rgba(52,211,153,0.1)' : 'rgba(113,113,122,0.1)',
                         color: e.status === 'Logged' ? '#60a5fa' : e.status === 'In Lab' ? '#fbbf24' : e.status === 'Analyzed' ? '#34d399' : '#a1a1aa',
                         border: `1px solid ${e.status === 'Logged' ? '#60a5fa40' : e.status === 'In Lab' ? '#fbbf2440' : e.status === 'Analyzed' ? '#34d39940' : '#71717a40'}`

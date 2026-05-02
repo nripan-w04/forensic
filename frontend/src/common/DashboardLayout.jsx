@@ -1,14 +1,16 @@
+import React from 'react';
 import Sidebar from './Sidebar';
+import { useAuth } from './AuthContext';
 
 export default function DashboardLayout({ children }) {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const { user } = useAuth();
   const role = user?.role || 'Guest';
 
   return (
     <div className="dashboard-root">
       <Sidebar role={role} />
       
-      <div className="dashboard-main" style={{ paddingTop: '72px' }}>
+      <div className="dashboard-main" style={{ paddingTop: '80px' }}>
         <div className="scanlines" />
         
         <main className="dashboard-content">

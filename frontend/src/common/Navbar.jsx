@@ -31,7 +31,7 @@ const Navbar = () => {
         {user && (
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 text-zinc-400 bg-white/5 hover:text-white"
+            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 text-zinc-400 bg-white/5 hover:text-white"
           >
             <Menu size={20} />
           </button>
@@ -49,9 +49,9 @@ const Navbar = () => {
 
 
 
-      <div className="flex items-center gap-3 md:gap-6">
+      <div className="flex items-center justify-center gap-6 md:gap-6">
         {user ? (
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-8 md:gap-4">
             <div className="hidden md:flex flex-col items-end mr-3">
               <span className="text-base font-extrabold text-white font-['Barlow'] tracking-wide">{user.name}</span>
               <span className="text-[13px] text-red-500 uppercase tracking-widest font-['Share_Tech_Mono'] font-bold">{user.role}</span>
@@ -59,11 +59,11 @@ const Navbar = () => {
 
             {dashboardPath && (
               <Link
-                to={dashboardPath}
+                to={`${dashboardPath}/profile`}
                 title="Go to Dashboard"
                 className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center border border-red-500/30 bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:shadow-[0_0_15px_rgba(220,38,38,0.3)] transition-all cursor-pointer no-underline"
               >
-                <User size={16} />
+                <User size={20} />
               </Link>
             )}
 
@@ -72,9 +72,9 @@ const Navbar = () => {
             <button
               onClick={handleLogout}
               title="Logout"
-              className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center border border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:text-white hover:border-red-500 hover:bg-red-500/20 transition-all cursor-pointer"
+              className="w-9  h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center border border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:text-white hover:border-red-500 hover:bg-red-500/20 transition-all cursor-pointer"
             >
-              <LogOut size={14} />
+              <LogOut size={25} />
             </button>
           </div>
         ) : (

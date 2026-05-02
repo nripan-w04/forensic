@@ -173,6 +173,11 @@ h1, h2, h3, h4, .font-tech {
 .hidden { display: none; }
 @media (min-width: 768px) {
   .md\:flex { display: flex; }
+  .md\:hidden { display: none; }
+}
+@media (min-width: 1024px) {
+  .lg\:flex { display: flex; }
+  .lg\:hidden { display: none; }
 }
 
 .max-w-4xl { max-width: 56rem; }

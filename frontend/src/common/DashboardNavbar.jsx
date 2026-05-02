@@ -1,8 +1,11 @@
 import React from 'react';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { LogOut, User as UserIcon, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useUI } from './UIContext';
 
 export default function DashboardNavbar({ user }) {
+  const { toggleMobileMenu } = useUI();
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     window.location.href = '/login';
@@ -10,6 +13,7 @@ export default function DashboardNavbar({ user }) {
 
   const getProfilePath = () => {
     switch(user?.role) {
+      case 'Admin': return '/admin/profile';
       case 'Police Officer': return '/police/profile';
       case 'Lab Analyst': return '/lab/profile';
       case 'Evidence Collector': return '/evidence/profile';
@@ -20,6 +24,16 @@ export default function DashboardNavbar({ user }) {
 
   return (
     <nav className="dashboard-nav">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <button 
+          onClick={toggleMobileMenu}
+          className="lg:hidden"
+          style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '8px' }}
+        >
+          <Menu size={24} />
+        </button>
+      </div>
+
       <div className="user-profile">
         <div className="user-info">
           <p className="user-name">

@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Users, LayoutDashboard, Shield, Microscope,
-  Package, Gavel, Settings, FileText, Activity, X
+  Package, Gavel, Settings, FileText, Activity, X, Database
 } from 'lucide-react';
 import { useUI } from './UIContext';
 
 export default function Sidebar({ role }) {
   const location = useLocation();
-  const { mobileMenuOpen, setMobileMenuOpen, toggleMobileMenu } = useUI();
+  const { mobileMenuOpen, setMobileMenuOpen } = useUI();
 
   // Close sidebar on route change
   useEffect(() => {
@@ -19,9 +19,10 @@ export default function Sidebar({ role }) {
     switch (role) {
       case 'Admin':
         return [
-          { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+          { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
           { name: 'Personnel', path: '/admin/personnel', icon: Users },
-          { name: 'Settings', path: '/admin/settings', icon: Settings },
+          { name: 'Case Files', path: '/admin/cases', icon: FileText },
+          { name: 'Evidence Vault', path: '/admin/evidence', icon: Database },
         ];
       case 'Police Officer':
         return [
@@ -65,9 +66,10 @@ export default function Sidebar({ role }) {
       <div 
         className={`sidebar-overlay ${mobileMenuOpen ? 'active' : ''}`}
         onClick={() => setMobileMenuOpen(false)}
+        style={{ zIndex: 100000 }}
       />
       
-      <aside className={`dashboard-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+      <aside className={`dashboard-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`} style={{ zIndex: 100001 }}>
         <div className="sidebar-header" style={{ justifyContent: 'space-between' }}>
           <div>
             <h2 className="sidebar-title">
@@ -78,10 +80,11 @@ export default function Sidebar({ role }) {
             </p>
           </div>
           <button 
-            className="md-hidden"
+            className="lg:hidden"
             onClick={() => setMobileMenuOpen(false)}
-            style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}
+            style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer', padding: '8px' }}
           >
+
             <X size={24} />
           </button>
         </div>
@@ -92,15 +95,15 @@ export default function Sidebar({ role }) {
           </p>
           {links.map((link) => {
             const Icon = link.icon;
-            const isActive = location.pathname === link.path || location.pathname.startsWith(link.path + '/');
+            const isCurrent = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
 
             return (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`menu-link ${isActive ? 'active' : ''}`}
+                className={`menu-link ${isCurrent ? 'active' : ''}`}
               >
-                <Icon size={18} style={{ color: isActive ? '#ef4444' : '#71717a' }} />
+                <Icon size={18} style={{ color: isCurrent ? '#ef4444' : '#71717a' }} />
                 {link.name}
               </Link>
             );
