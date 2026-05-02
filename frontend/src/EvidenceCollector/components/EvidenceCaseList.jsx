@@ -117,18 +117,18 @@ export default function EvidenceCaseList() {
               {!loading && filtered.map((c, i) => (
                 <motion.tr key={c._id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
                   <td>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: '#f4f4f5', fontWeight: 600 }}>{c.caseId}</div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#3b82f6', marginTop: 4 }}>FIR: {c.firNumber || 'N/A'}</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#f4f4f5', fontWeight: 600 }}>{c.caseId}</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: '#3b82f6', marginTop: 4 }}>FIR: {c.firNumber || 'N/A'}</div>
                   </td>
                   <td>
                     <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 16, color: '#d4d4d8', fontWeight: 600 }}>{c.title}</div>
-                    <div style={{ fontSize: 10, color: '#71717a', textTransform: 'uppercase', marginTop: 2 }}>{c.category}</div>
+                    <div style={{ fontSize: 14, color: '#71717a', textTransform: 'uppercase', marginTop: 2 }}>{c.category}</div>
                   </td>
                   <td>
-                    <div style={{ fontSize: 12, color: '#a1a1aa' }}>{c.location}</div>
+                    <div style={{ fontSize: 15, color: '#ffffffff' }}>{c.location}</div>
                   </td>
                   <td>
-                    <div style={{ fontSize: 10, fontFamily: "'Share Tech Mono', monospace", color: '#fbbf24' }}>{c.status}</div>
+                    <div style={{ fontSize: 14, fontFamily: "'Share Tech Mono', monospace", color: '#fbbf24' }}>{c.status}</div>
                   </td>
                   <td>
                     {c.status !== 'CLOSED' && c.status !== 'FILED_IN_COURT' ? (
@@ -139,7 +139,7 @@ export default function EvidenceCaseList() {
                         <Plus size={12} /> ADD EVIDENCE
                       </button>
                     ) : (
-                      <div style={{ fontSize: 9, color: '#52525b', fontFamily: "'Share Tech Mono', monospace" }}>LOCKED FOR REVIEW</div>
+                      <div style={{ fontSize: 12, color: '#52525b', fontFamily: "'Share Tech Mono', monospace" }}>LOCKED FOR REVIEW</div>
                     )}
                   </td>
                 </motion.tr>

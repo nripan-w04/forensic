@@ -112,7 +112,7 @@ export default function ManageEvidence() {
             <tr>
               <th>Tag ID / Case</th>
               <th>Type / Description</th>
-              <th>Barcode / QR</th>
+              <th>Barcode </th>
               <th>Collector</th>
               <th>Custody Status</th>
               <th>Lab Reports</th>
@@ -133,8 +133,7 @@ export default function ManageEvidence() {
                     <div style={{ fontSize: 15, color: '#d4d4d8', maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>{e.description}</div>
                   </td>
                   <td>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: '#a1a1aa', fontWeight: 600 }}>B: {e.barcode || 'N/A'}</div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: '#a1a1aa', marginTop: 4, fontWeight: 600 }}>Q: {e.qrCode || 'N/A'}</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#ffffffff', fontWeight: 600 }}>Bar Code: {e.barcode || 'N/A'}</div>
                   </td>
                   <td>
                     <div style={{ fontSize: 16, color: '#e4e4e7', fontWeight: 600 }}>{e.collectedBy}</div>
@@ -148,7 +147,7 @@ export default function ManageEvidence() {
                         </a>
                       ))}
                       {(!e.labReports || e.labReports.length === 0) && (
-                        <span style={{ fontSize: 10, color: '#52525b', fontFamily: "'Share Tech Mono', monospace" }}>PENDING</span>
+                        <span style={{ fontSize: 15, color: '#ffffffff', fontFamily: "'Share Tech Mono', monospace" }}>PENDING</span>
                       )}
                     </div>
                   </td>
@@ -165,11 +164,11 @@ export default function ManageEvidence() {
                   </td>
                   <td style={{ textAlign: 'right', paddingRight: 22 }}>
                     <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                      <button onClick={() => setViewingHistory(e)} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', cursor: 'pointer', transition: 'all 0.2s', fontSize: 10, fontFamily: "'Share Tech Mono', monospace" }} title="View Chain of Custody">
+                      <button onClick={() => setViewingHistory(e)} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', cursor: 'pointer', transition: 'all 0.2s', fontSize: 13, fontFamily: "'Share Tech Mono', monospace" }} title="View Chain of Custody">
                          HISTORY
                       </button>
                       {e.status === 'COLLECTED' && (
-                        <button onClick={() => setTransferringItem(e)} style={{ background: 'transparent', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', cursor: 'pointer', transition: 'all 0.2s', fontSize: 10, fontFamily: "'Share Tech Mono', monospace" }} title="Transfer to Lab">
+                        <button onClick={() => setTransferringItem(e)} style={{ background: 'transparent', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', cursor: 'pointer', transition: 'all 0.2s', fontSize: 13, fontFamily: "'Share Tech Mono', monospace" }} title="Transfer to Lab">
                           <Package size={12} style={{ marginRight: 4 }} /> TRANSFER
                         </button>
                       )}
@@ -236,7 +235,7 @@ export default function ManageEvidence() {
                           <div>
                              <div style={{ color: '#ffffff', fontSize: 15, fontWeight: 600 }}>{log.to}</div>
                              <div style={{ color: '#ffffff', opacity: 0.6, fontSize: 12, fontFamily: "'Share Tech Mono', monospace", marginTop: 4 }}>
-                                FROM: {log.from} · {new Date(log.timestamp).toLocaleString()}
+                                FROM: {log.from} · 
                              </div>
                              <div style={{ color: '#ffffff', opacity: 0.8, fontSize: 14, marginTop: 6, lineHeight: 1.5 }}>{log.purpose}</div>
                           </div>
