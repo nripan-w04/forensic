@@ -42,6 +42,7 @@ export default function Sidebar({ role }) {
         return [
           { name: 'Dashboard', path: '/evidence', icon: LayoutDashboard },
           { name: 'Link to Case', path: '/evidence/cases', icon: FileText },
+          { name: 'Register Evidence', path: '/evidence/register', icon: Shield },
           { name: 'Manage Evidence', path: '/evidence/logs', icon: Activity },
           { name: 'My Profile', path: '/evidence/profile', icon: Users }
         ];

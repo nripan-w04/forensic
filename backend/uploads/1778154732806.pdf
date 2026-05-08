@@ -1,0 +1,720 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 6716
+>>
+stream
+0.5670000000000001 w
+0 G
+0.06 0.09 0.16 rg
+0. 841.8899999999999864 595.2755905511811534 -113.3858267716535551 re
+f
+BT
+/F2 24 Tf
+27.5999999999999979 TL
+0.176 0.831 0.749 rg
+56.6929133858267775 785.1970866141732586 Td
+(GENOMECARE) Tj
+ET
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+56.6929133858267775 762.5199212598424765 Td
+(ADVANCED GENOMIC INTELLIGENCE REGISTRY) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+425.1968503937008563 799.3703149606299121 Td
+(REPORT DATE: 07/05/2026) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+1. g
+425.1968503937008563 779.5277952755905062 Td
+(STATUS: VERIFIED) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 685.9844881889763428 Td
+(PATIENT PROTOCOL SUMMARY) Tj
+ET
+0.18 0.83 0.75 RG
+1.4173228346456694 w
+56.6929133858267775 677.480551181102328 m
+538.5826771653544256 677.480551181102328 l
+S
+BT
+/F1 10 Tf
+11.5 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 649.1340944881889072 Td
+(Patient Identity: dna_2026) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 629.291574803149615 Td
+(Sequence ID: GC_001_ArunKumar_HumanDNA) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 609.4490551181102092 Td
+(Lab Location: central diagnosis lab) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.059 0.09 0.165 rg
+311.8110236220472871 649.1340944881889072 Td
+(Purpose: health risk) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0.059 0.09 0.165 rg
+311.8110236220472871 629.291574803149615 Td
+(Length: 212 bp) Tj
+ET
+0.97 0.98 0.99 rg
+56.6929133858267775 572.5986614173227736 481.8897637795275841 -85.0393700787401627 re
+f
+0.89 0.91 0.94 RG
+56.6929133858267775 572.5986614173227736 481.8897637795275841 -85.0393700787401627 re
+S
+BT
+/F2 10 Tf
+11.5 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 544.2522047244094665 Td
+(GENOMIC RISK PREDICTION) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.957 0.247 0.369 rg
+70.8661417322834666 515.9057480314959321 Td
+(High RISK) Tj
+ET
+BT
+/F2 10 Tf
+11.5 TL
+0.059 0.09 0.165 rg
+311.8110236220472871 515.9057480314959321 Td
+(AI Confidence: 85.0%) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 445.0396062992125508 Td
+(DETECTED VARIANTS) Tj
+ET
+56.6929133858267775 436.5356692913385359 m
+538.5826771653544256 436.5356692913385359 l
+S
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 411.0238582677164914 Td
+(GENE) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 411.0238582677164914 Td
+(TYPE) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 411.0238582677164914 Td
+(MUTATION) Tj
+ET
+BT
+/F2 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 411.0238582677164914 Td
+(DRUG RESPONSE) Tj
+ET
+0.2834645669291339 w
+56.6929133858267775 402.5199212598424765 m
+538.5826771653544256 402.5199212598424765 l
+S
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 382.6774015748030706 Td
+(BRCA1) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 382.6774015748030706 Td
+(SNP) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 382.6774015748030706 Td
+(A>T \(Pos: 25\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 382.6774015748030706 Td
+(Tamoxifen) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 360.0002362204724022 Td
+(INS) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 360.0002362204724022 Td
+(SNP) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 360.0002362204724022 Td
+(C>G \(Pos: 48\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 360.0002362204724022 Td
+(Metformin) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 337.323070866141677 Td
+(LDLR) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 337.323070866141677 Td
+(Mutation) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 337.323070866141677 Td
+(G>A \(Pos: 1\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 337.323070866141677 Td
+(Atorvastatin) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 314.6459055118109518 Td
+(APOE) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 314.6459055118109518 Td
+(Deletion) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 314.6459055118109518 Td
+(DEL_T \(Pos: 10\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 314.6459055118109518 Td
+(Donepezil) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 291.9687401574802834 Td
+(LRRK2) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 291.9687401574802834 Td
+(Insertion) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 291.9687401574802834 Td
+(INS_A \(Pos: 11\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 291.9687401574802834 Td
+(Levodopa) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 269.2915748031495013 Td
+(CFTR) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 269.2915748031495013 Td
+(Mutation) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 269.2915748031495013 Td
+(F508del \(Pos: 4\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 269.2915748031495013 Td
+(Ivacaftor) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 246.614409448818833 Td
+(HBB) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 246.614409448818833 Td
+(Insertion) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 246.614409448818833 Td
+(INS_G \(Pos: 13\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 246.614409448818833 Td
+(Hydroxyurea) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+70.8661417322834666 223.9372440944881646 Td
+(HBA1) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+155.9055118110236435 223.9372440944881646 Td
+(Deletion) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+240.9448818897637921 223.9372440944881646 Td
+(DEL_G \(Pos: 21\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.059 0.09 0.165 rg
+368.5039370078740717 223.9372440944881646 Td
+(Iron Chelators) Tj
+ET
+BT
+/F9 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+158.6377952755906335 34.0159842519684616 Td
+(CONFIDENTIAL MEDICAL RECORD - GENOMECARE SYSTEM - PAGE 1 OF 2) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 5200
+>>
+stream
+0.2834645669291339 w
+0.89 0.91 0.94 RG
+0.06 0.09 0.16 rg
+0. 841.8899999999999864 595.2755905511811534 -56.6929133858267775 re
+f
+BT
+/F1 12 Tf
+13.7999999999999989 TL
+1. g
+56.6929133858267775 805.0396062992125508 Td
+(AI CLINICAL INSIGHT REPORT) Tj
+ET
+BT
+/F9 11 Tf
+12.6499999999999986 TL
+0.059 0.09 0.165 rg
+56.6929133858267775 728.5041732283464171 Td
+(1. EXECUTIVE SUMMARY) Tj
+T* (The genomic analysis of your DNA has identified several variants that may impact your health. These) Tj
+T* (findings suggest that you may be at a higher risk for certain diseases, with cancer being the primary predicted) Tj
+T* (disease. It is essential to review these results with a qualified physician or genetic specialist to understand the) Tj
+T* (implications and develop a plan for your health.) Tj
+T* () Tj
+T* (2. VARIANT ANALYSIS) Tj
+T* (The analysis of your DNA has detected several variants in genes associated with various diseases. ) Tj
+T* (The BRCA1 gene variant may increase your risk of cancer, as it affects the body's ability to repair damaged) Tj
+T* (DNA. ) Tj
+T* (The INS gene variant is associated with an increased risk of diabetes, which is a condition that affects the) Tj
+T* (body's ability to regulate blood sugar levels. ) Tj
+T* (The LDLR gene variant may increase your risk of cardiovascular disease, which can lead to heart attacks and) Tj
+T* (strokes. ) Tj
+T* (The APOE gene variant is associated with an increased risk of Alzheimer's disease, a condition that affects) Tj
+T* (memory and cognitive function. ) Tj
+T* (The LRRK2 gene variant may increase your risk of Parkinson's disease, which is a condition that affects) Tj
+T* (movement and coordination. ) Tj
+T* (The CFTR gene variant is associated with an increased risk of cystic fibrosis, a condition that affects the) Tj
+T* (lungs and digestive system. ) Tj
+T* (The HBB and HBA1 gene variants may increase your risk of sickle cell anemia and thalassemia,) Tj
+T* (respectively, which are conditions that affect the production of healthy red blood cells.) Tj
+T* () Tj
+T* (3. DISEASE RISK ASSESSMENT) Tj
+T* (The primary predicted disease based on your genomic analysis is cancer, with a probability score of 85.0%) Tj
+T* (and a risk level classified as high. This means that the analysis suggests you may be at a higher risk of) Tj
+T* (developing cancer compared to the general population. However, it is essential to understand that this is a) Tj
+T* (predicted risk and not a definitive diagnosis. A qualified physician or genetic specialist can help you) Tj
+T* (understand the implications of this finding and develop a plan to manage your risk.) Tj
+T* () Tj
+T* (4. CLINICAL RECOMMENDATIONS) Tj
+T* (Based on the variants detected, it is recommended that you consult with a qualified physician or genetic) Tj
+T* (specialist to discuss the following next steps: ) Tj
+T* (further testing to confirm the presence of these variants, ) Tj
+T* (lifestyle changes to reduce your risk of developing these diseases, ) Tj
+T* (and referrals to specialists who can help you manage your risk. ) Tj
+T* (Additionally, the following medications may be recommended: ) Tj
+T* (Tamoxifen for cancer, ) Tj
+T* (Metformin for diabetes, ) Tj
+T* (Atorvastatin for cardiovascular disease, ) Tj
+T* (Donepezil for Alzheimer's disease, ) Tj
+T* (Levodopa for Parkinson's disease, ) Tj
+T* (Ivacaftor for cystic fibrosis, ) Tj
+T* (Hydroxyurea for sickle cell anemia, ) Tj
+T* (and Iron Chelators for thalassemia.) Tj
+T* () Tj
+T* (5. PRECAUTIONS AND PREVENTIVE MEASURES) Tj
+T* (To reduce your risk of developing these diseases, it is essential to adopt a healthy lifestyle. ) Tj
+T* (This includes eating a balanced diet that is low in fat and sugar, ) Tj
+T* (and high in fruits, vegetables, and whole grains. ) Tj
+T* (Regular exercise, such as walking or jogging, can also help reduce your risk. ) Tj
+T* (It is recommended that you exercise for at least 30 minutes a day, most days of the week. ) Tj
+T* (Stress management is also crucial, and techniques such as meditation or yoga can be helpful. ) Tj
+T* (Regular health screenings, such as blood pressure checks and cancer screenings, can help detect diseases) Tj
+T* (early when they are more treatable. ) Tj
+T* (It is also essential to avoid habits that can increase your risk, such as smoking or excessive alcohol) Tj
+T* (consumption.) Tj
+T* () Tj
+T* (6. IMPORTANT DISCLAIMER) Tj
+T* (This report is an AI-generated preliminary genomic report intended only for educational, research, and) Tj
+T* (preliminary screening purposes. ) Tj
+T* (The results and recommendations should not be considered definitive or used to make medical decisions) Tj
+T* (without consultation with a qualified physician or genetic specialist. ) Tj
+T* (It is essential to review these findings with a qualified healthcare professional to understand the implications) Tj
+T* (and develop a plan for your health. ) Tj
+T* (They can help you interpret the results, discuss the risks and benefits of further testing, and develop a) Tj
+T* (personalized plan to manage your health.) Tj
+ET
+BT
+/F9 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+158.6377952755906335 34.0159842519684616 Td
+(CONFIDENTIAL MEDICAL RECORD - GENOMECARE SYSTEM - PAGE 2 OF 2) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R ]
+/Count 2
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 7 0 R
+/F2 8 0 R
+/F3 9 0 R
+/F4 10 0 R
+/F5 11 0 R
+/F6 12 0 R
+/F7 13 0 R
+/F8 14 0 R
+/F9 15 0 R
+/F10 16 0 R
+/F11 17 0 R
+/F12 18 0 R
+/F13 19 0 R
+/F14 20 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+21 0 obj
+<<
+/Producer (jsPDF 2.5.1)
+/CreationDate (D:20260507162936+05'30')
+>>
+endobj
+22 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 23
+0000000000 65535 f 
+0000012309 00000 n 
+0000014134 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000006920 00000 n 
+0000007057 00000 n 
+0000012372 00000 n 
+0000012497 00000 n 
+0000012627 00000 n 
+0000012760 00000 n 
+0000012898 00000 n 
+0000013022 00000 n 
+0000013151 00000 n 
+0000013283 00000 n 
+0000013419 00000 n 
+0000013547 00000 n 
+0000013674 00000 n 
+0000013803 00000 n 
+0000013936 00000 n 
+0000014038 00000 n 
+0000014384 00000 n 
+0000014470 00000 n 
+trailer
+<<
+/Size 23
+/Root 22 0 R
+/Info 21 0 R
+/ID [ <DA3F081EBF0B5003AF747DE696A53970> <DA3F081EBF0B5003AF747DE696A53970> ]
+>>
+startxref
+14574
+%%EOF

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Microscope, Package, AlertTriangle } from 'lucide-react';
+import { Activity, Microscope, Package, AlertTriangle, ShieldAlert } from 'lucide-react';
 import axios from 'axios';
 import StatCard from '../../Admin/components/StatCard';
 
@@ -27,10 +27,10 @@ export default function LabOverview() {
   const awaitingReceipt = evidence.filter(e => e.status === 'LOGGED' || e.status === 'COLLECTED').length;
   
   const STATS = [
-    { label: 'Pending Analysis', value: pendingAnalysis, icon: Microscope, color: '#fbbf24', delta: 'In Laboratory' },
-    { label: 'Analyses Complete', value: completedAnalyses, icon: Activity, color: '#34d399', delta: 'Results Transmitted' },
-    { label: 'Awaiting Receipt', value: awaitingReceipt, icon: Package, color: '#60a5fa', delta: 'From Field Teams' },
-    { label: 'Total Inventory', value: evidence.length, icon: AlertTriangle, color: '#ef4444', delta: 'Total logged items' },
+    { label: 'COLLECTOR', value: evidence.length, icon: Package, color: '#ef4444', delta: 'Total Registered' },
+    { label: 'LAB', value: pendingAnalysis, icon: Microscope, color: '#fbbf24', delta: 'Collector → Lab' },
+    { label: 'COURT', value: completedAnalyses, icon: Activity, color: '#34d399', delta: 'Lab → Results' },
+    { label: 'POLICE', value: awaitingReceipt, icon: ShieldAlert, color: '#3b82f6', delta: 'Awaiting Hub' },
   ];
 
   // Activities

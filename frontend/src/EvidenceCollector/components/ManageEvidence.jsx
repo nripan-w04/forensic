@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Edit, Trash2, Package, X, Check, FileText } from 'lucide-react';
+import { Search, Edit, Trash2, Package, X, Check, FileText, Eye, ShieldAlert, Zap, Cpu } from 'lucide-react';
 import axios from 'axios';
 import { useUI } from '../../common/UIContext';
 
@@ -11,6 +11,9 @@ export default function ManageEvidence() {
   const [loading, setLoading] = useState(true);
   const [editingItem, setEditingItem] = useState(null);
   const [viewingHistory, setViewingHistory] = useState(null);
+  const [viewingReport, setViewingReport] = useState(null);
+  const [viewingInsight, setViewingInsight] = useState(null);
+
 
   const fetchEvidence = async () => {
     try {
@@ -110,13 +113,14 @@ export default function ManageEvidence() {
         <table className="data-table">
           <thead>
             <tr>
-              <th>Tag ID / Case</th>
-              <th>Type / Description</th>
-              <th>Barcode </th>
-              <th>Collector</th>
-              <th>Custody Status</th>
-              <th>Lab Reports</th>
-              <th style={{ textAlign: 'right', paddingRight: 22 }}>Actions</th>
+              <th style={{ fontSize: 13 }}>EVIDENCE IDENTIFIER</th>
+              <th style={{ fontSize: 13 }}>ITEM SPECIFICATION</th>
+              <th style={{ fontSize: 13 }}>SECURITY BARCODE</th>
+              <th style={{ fontSize: 13 }}>COLLECTING OFFICER</th>
+              <th style={{ fontSize: 13 }}>OPERATIONAL STATUS</th>
+              <th style={{ fontSize: 13 }}>NEURAL DIAGNOSTICS</th>
+              <th style={{ fontSize: 13 }}>ANALYSIS REPORTS</th>
+              <th style={{ textAlign: 'right', paddingRight: 22, fontSize: 13 }}>COMMANDS</th>
             </tr>
           </thead>
           <tbody>
@@ -140,18 +144,6 @@ export default function ManageEvidence() {
                     <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#71717a', marginTop: 4, fontWeight: 500 }}>{e.collectedDate}</div>
                   </td>
                   <td>
-                    <div className="custom-scroll" style={{ display: 'flex', gap: 6, overflowX: 'auto', maxWidth: 150, paddingBottom: 4 }}>
-                      {e.labReports?.map((path, idx) => (
-                        <a key={idx} href={`http://localhost:4000/${path}`} target="_blank" rel="noreferrer" style={{ flexShrink: 0, padding: '4px 8px', background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 3, color: '#34d399', textDecoration: 'none', fontSize: 10, display: 'flex', alignItems: 'center', gap: 4, fontFamily: "'Share Tech Mono', monospace" }}>
-                          <FileText size={12} /> {idx + 1}
-                        </a>
-                      ))}
-                      {(!e.labReports || e.labReports.length === 0) && (
-                        <span style={{ fontSize: 15, color: '#ffffffff', fontFamily: "'Share Tech Mono', monospace" }}>PENDING</span>
-                      )}
-                    </div>
-                  </td>
-                  <td>
                     <div style={{
                       padding: '8px 16px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 13, textTransform: 'uppercase', textAlign: 'center', fontWeight: 800,
                       background: e.status === 'LOGGED' ? 'rgba(59,130,246,0.15)' : e.status === 'SENT_TO_LAB' ? 'rgba(251,191,36,0.15)' : e.status === 'ANALYZED' ? 'rgba(52,211,153,0.15)' : 'rgba(113,113,122,0.15)',
@@ -162,10 +154,58 @@ export default function ManageEvidence() {
                       {e.status}
                     </div>
                   </td>
+                  <td>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {e.aiStrength && (
+                        <button 
+                          onClick={() => setViewingInsight({ title: 'STRENGTH ANALYSIS', content: e.aiStrength, color: '#d8b4fe', icon: <ShieldAlert size={14} /> })}
+                          style={{ background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.2)', color: '#d8b4fe', padding: '4px 8px', borderRadius: 4, fontSize: 9, fontFamily: "'Share Tech Mono', monospace", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, width: 'fit-content' }}
+                        >
+                          <ShieldAlert size={12} /> STR
+                        </button>
+                      )}
+                      {e.aiPriority && (
+                        <button 
+                          onClick={() => setViewingInsight({ title: 'PRIORITY ASSESSMENT', content: e.aiPriority, color: '#60a5fa', icon: <Zap size={14} /> })}
+                          style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', color: '#60a5fa', padding: '4px 8px', borderRadius: 4, fontSize: 9, fontFamily: "'Share Tech Mono', monospace", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, width: 'fit-content' }}
+                        >
+                          <Zap size={12} /> PRI
+                        </button>
+                      )}
+                      {e.aiRecommendations && (
+                        <button 
+                          onClick={() => setViewingInsight({ title: 'EVIDENCE RECOMMENDATIONS', content: e.aiRecommendations, color: '#34d399', icon: <Cpu size={14} /> })}
+                          style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', color: '#34d399', padding: '4px 8px', borderRadius: 4, fontSize: 9, fontFamily: "'Share Tech Mono', monospace", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, width: 'fit-content' }}
+                        >
+                          <Cpu size={12} /> REC
+                        </button>
+                      )}
+                      {!e.aiStrength && !e.aiPriority && !e.aiRecommendations && (
+                        <span style={{ fontSize: 10, color: '#52525b', fontFamily: "'Share Tech Mono', monospace" }}>NO DIAGNOSTICS</span>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="custom-scroll" style={{ display: 'flex', gap: 6, overflowX: 'auto', maxWidth: 150, paddingBottom: 4 }}>
+                      {e.labReports?.map((path, idx) => (
+                        <button 
+                          key={idx} 
+                          onClick={() => setViewingReport(`http://localhost:4000/${path}`)}
+                          style={{ flexShrink: 0, padding: '6px 10px', background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 3, color: '#34d399', fontSize: 10, display: 'flex', alignItems: 'center', gap: 4, fontFamily: "'Share Tech Mono', monospace", cursor: 'pointer' }}
+                        >
+                          <FileText size={12} /> {idx + 1}
+                        </button>
+                      ))}
+                      {(!e.labReports || e.labReports.length === 0) && (
+                        <span style={{ fontSize: 13, color: '#71717a', fontFamily: "'Share Tech Mono', monospace" }}>PENDING</span>
+                      )}
+                    </div>
+                  </td>
                   <td style={{ textAlign: 'right', paddingRight: 22 }}>
                     <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+
                       <button onClick={() => setViewingHistory(e)} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', cursor: 'pointer', transition: 'all 0.2s', fontSize: 13, fontFamily: "'Share Tech Mono', monospace" }} title="View Chain of Custody">
-                         HISTORY
+                        HISTORY
                       </button>
                       {e.status === 'COLLECTED' && (
                         <button onClick={() => setTransferringItem(e)} style={{ background: 'transparent', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24', cursor: 'pointer', transition: 'all 0.2s', fontSize: 13, fontFamily: "'Share Tech Mono', monospace" }} title="Transfer to Lab">
@@ -212,38 +252,38 @@ export default function ManageEvidence() {
                 </div>
 
                 <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4, marginBottom: 20 }}>
-                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                      <div>
-                         <div style={{ fontSize: 10, color: '#71717a', fontFamily: "'Share Tech Mono', monospace" }}>EVIDENCE ID</div>
-                         <div style={{ fontSize: 15, color: '#ffffff', fontWeight: 600 }}>{viewingHistory.evidenceId}</div>
-                      </div>
-                      <div>
-                         <div style={{ fontSize: 10, color: '#71717a', fontFamily: "'Share Tech Mono', monospace" }}>CASE REFERENCE</div>
-                         <div style={{ fontSize: 15, color: '#3b82f6', fontWeight: 600 }}>{viewingHistory.caseId}</div>
-                      </div>
-                   </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 10, color: '#71717a', fontFamily: "'Share Tech Mono', monospace" }}>EVIDENCE ID</div>
+                      <div style={{ fontSize: 15, color: '#ffffff', fontWeight: 600 }}>{viewingHistory.evidenceId}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 10, color: '#71717a', fontFamily: "'Share Tech Mono', monospace" }}>CASE REFERENCE</div>
+                      <div style={{ fontSize: 15, color: '#3b82f6', fontWeight: 600 }}>{viewingHistory.caseId}</div>
+                    </div>
+                  </div>
                 </div>
-                
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-                   {viewingHistory.chainOfCustody && viewingHistory.chainOfCustody.length > 0 ? (
-                     viewingHistory.chainOfCustody.map((log, i) => (
-                       <div key={i} style={{ display: 'flex', gap: 16 }}>
-                          <div style={{ position: 'relative' }}>
-                             <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#dc2626', marginTop: 4 }} />
-                             {i !== viewingHistory.chainOfCustody.length - 1 && <div style={{ position: 'absolute', top: 14, left: 4.5, width: 1, height: '100%', background: 'rgba(255,255,255,0.1)' }} />}
+                  {viewingHistory.chainOfCustody && viewingHistory.chainOfCustody.length > 0 ? (
+                    viewingHistory.chainOfCustody.map((log, i) => (
+                      <div key={i} style={{ display: 'flex', gap: 16 }}>
+                        <div style={{ position: 'relative' }}>
+                          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#dc2626', marginTop: 4 }} />
+                          {i !== viewingHistory.chainOfCustody.length - 1 && <div style={{ position: 'absolute', top: 14, left: 4.5, width: 1, height: '100%', background: 'rgba(255,255,255,0.1)' }} />}
+                        </div>
+                        <div>
+                          <div style={{ color: '#ffffff', fontSize: 15, fontWeight: 600 }}>{log.to}</div>
+                          <div style={{ color: '#ffffff', opacity: 0.6, fontSize: 12, fontFamily: "'Share Tech Mono', monospace", marginTop: 4 }}>
+                            FROM: {log.from} ·
                           </div>
-                          <div>
-                             <div style={{ color: '#ffffff', fontSize: 15, fontWeight: 600 }}>{log.to}</div>
-                             <div style={{ color: '#ffffff', opacity: 0.6, fontSize: 12, fontFamily: "'Share Tech Mono', monospace", marginTop: 4 }}>
-                                FROM: {log.from} · 
-                             </div>
-                             <div style={{ color: '#ffffff', opacity: 0.8, fontSize: 14, marginTop: 6, lineHeight: 1.5 }}>{log.purpose}</div>
-                          </div>
-                       </div>
-                     ))
-                   ) : (
-                     <div style={{ textAlign: 'center', color: '#ffffff', opacity: 0.3, padding: '40px 0', fontSize: 12 }}>NO TRANSFER HISTORY RECORDED</div>
-                   )}
+                          <div style={{ color: '#ffffff', opacity: 0.8, fontSize: 14, marginTop: 6, lineHeight: 1.5 }}>{log.purpose}</div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ textAlign: 'center', color: '#ffffff', opacity: 0.3, padding: '40px 0', fontSize: 12 }}>NO TRANSFER HISTORY RECORDED</div>
+                  )}
                 </div>
               </motion.div>
             </motion.div>
@@ -321,6 +361,65 @@ export default function ManageEvidence() {
                     </button>
                   </div>
                 </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Insight Detail Modal */}
+        <AnimatePresence>
+          {viewingInsight && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setViewingInsight(null)}
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10001 }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                style={{ width: '100%', maxWidth: 500, background: '#0a0a12', border: `1px solid ${viewingInsight.color}40`, borderRadius: 8, overflow: 'hidden' }}
+              >
+                <div style={{ padding: '20px 24px', background: `${viewingInsight.color}05`, borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ color: viewingInsight.color }}>{viewingInsight.icon}</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: viewingInsight.color, fontWeight: 700, letterSpacing: '0.1em' }}>{viewingInsight.title}</div>
+                  </div>
+                  <button onClick={() => setViewingInsight(null)} style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}><X size={20} /></button>
+                </div>
+                <div className="custom-scroll" style={{ padding: 32, maxHeight: '60vh', overflowY: 'auto' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4, padding: 24, color: '#f4f4f5', fontSize: 16, fontFamily: "'Barlow Condensed', sans-serif", lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                    {viewingInsight.content}
+                  </div>
+                </div>
+                <div style={{ padding: '0 32px 32px 32px', display: 'flex', justifyContent: 'flex-end' }}>
+                  <button onClick={() => setViewingInsight(null)} style={{ background: viewingInsight.color, color: '#000', border: 'none', padding: '8px 24px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>ACKNOWLEDGE</button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Report Viewer Modal */}
+        <AnimatePresence>
+          {viewingReport && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setViewingReport(null)}
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                style={{ width: '90vw', height: '90vh', background: '#0a0a12', border: '1px solid rgba(52,211,153,0.3)', borderRadius: 8, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+              >
+                <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#34d399', fontWeight: 700 }}>FORENSIC_ANALYSIS_REPORT.PDF</div>
+                  <div style={{ display: 'flex', gap: 16 }}>
+                    <a href={viewingReport} download style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', color: '#34d399', padding: '6px 12px', borderRadius: 4, textDecoration: 'none', fontSize: 11, fontFamily: "'Share Tech Mono', monospace" }}>DOWNLOAD</a>
+                    <button onClick={() => setViewingReport(null)} style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}><X size={20} /></button>
+                  </div>
+                </div>
+                <iframe src={viewingReport} title="Lab Report" style={{ width: '100%', height: '100%', border: 'none' }} />
               </motion.div>
             </motion.div>
           )}

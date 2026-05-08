@@ -5,6 +5,7 @@ const multer = require("multer");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 const socketConfig = require("../config/socket");
+const { analyzeForensicData } = require('../ml/forensic_service');
 
 // Multer Configuration
 const storage = multer.diskStorage({
@@ -55,7 +56,10 @@ const login = async (req, res) => {
             return res.status(401).json({ message: "Access Denied: Incorrect role for this user" });
         }
         if (user.role !== 'Admin' && user.status !== 'Approved') {
-            return res.status(403).json({ message: "Account pending approval or rejected." });
+            const message = user.status === 'Rejected'
+                ? "Access Denied: Your registration application has been declined by the administrator."
+                : "Access Denied: Your account is currently pending administrative approval.";
+            return res.status(403).json({ message });
         }
         res.status(200).json({ message: "Clearance Granted", user });
     } catch (error) {
@@ -88,7 +92,7 @@ const updateUserStatus = async (req, res) => {
             return res.status(404).json({ message: "Personnel record not found" });
         }
 
-        res.status(200).json({ message: `Personnel status updated to ${status}`, user });
+        res.status(200).json({ message: `Personnel record ${status.toLowerCase()} successfully`, user });
     } catch (error) {
         console.error("Status Update Error:", error);
         res.status(500).json({ message: "Error updating status", error: error.message });
@@ -125,10 +129,12 @@ const registerCase = async (req, res) => {
 
         // Generate a random 4-digit case ID like C-8821
         const caseId = 'C-' + Math.floor(1000 + Math.random() * 9000);
+        const caseImage = req.file ? req.file.path : null;
 
         const newCase = new Case({
             caseId, title, date, location, category, description,
             firNumber, suspects, investigatingOfficer,
+            caseImage,
             status: "OPEN"
         });
         await newCase.save();
@@ -171,9 +177,12 @@ const addEvidence = async (req, res) => {
     try {
         const payload = req.body;
         const evidenceId = 'E-' + Math.floor(1000 + Math.random() * 9000);
+        const images = req.files ? req.files.map(f => f.path) : [];
+
         const newEvidence = new Evidence({
             ...payload,
             evidenceId,
+            images,
             chainOfCustody: [{
                 from: "Crime Scene",
                 to: payload.collectedBy,
@@ -197,7 +206,9 @@ const addEvidence = async (req, res) => {
 
 const getEvidences = async (req, res) => {
     try {
-        const evidences = await Evidence.find().sort({ createdAt: -1 });
+        const { caseId } = req.query;
+        const filter = caseId ? { caseId } : {};
+        const evidences = await Evidence.find(filter).sort({ createdAt: -1 });
         res.status(200).json(evidences);
     } catch (error) {
         res.status(500).json({ message: "Error fetching evidence", error: error.message });
@@ -324,31 +335,37 @@ const generateAIAnalysis = async (req, res) => {
         const evidence = await Evidence.findById(id);
         if (!evidence) return res.status(404).json({ message: "Evidence not found" });
 
-        // Simulated AI analysis "API Call"
-        setTimeout(async () => {
-            let analysis = "";
-            const type = evidence.type.toLowerCase();
+        // Perform multi-dimensional analysis using the ML service
+        const recommendations = await analyzeForensicData(evidence.description, "evidence");
+        const strength = await analyzeForensicData(evidence.description, "strength");
+        const priority = await analyzeForensicData(evidence.description, "priority");
+        
+        // Populate all AI fields in the model
+        evidence.aiAnalysis = recommendations; // Primary summary
+        evidence.aiRecommendations = recommendations;
+        evidence.aiStrength = strength;
+        evidence.aiPriority = priority;
+        
+        await evidence.save();
 
-            if (type.includes("dna") || type.includes("blood")) {
-                analysis = "AI ANALYSIS: Biological markers detected. High probability of match with CODIS database. Recommended: STR analysis for definitive identification. Estimated accuracy: 99.8%.";
-            } else if (type.includes("weapon") || type.includes("fingerprint")) {
-                analysis = "AI ANALYSIS: Structural integrity check complete. Latent prints extracted from trigger/grip. Database cross-reference suggests potential link to prior Case #C-4421. Recommended: Ballistics comparison.";
-            } else if (type.includes("digital") || type.includes("phone")) {
-                analysis = "AI ANALYSIS: Encrypted partitions detected. Decryption heuristic active. Metadata indicates location coordinates mismatching with witness statement. High-priority files flagged in /hidden_root/.";
-            } else {
-                analysis = "AI ANALYSIS: Pattern recognition confirms anomalous characteristics. Recommend chemical spectral analysis. No direct matches found in current local database; searching international registries.";
-            }
+        // Emit Socket Event for real-time updates
+        socketConfig.getIo().emit('ai_analysis_complete', { 
+            caseId: evidence.caseId, 
+            evidenceId: evidence.evidenceId, 
+            analysis: recommendations,
+            strength,
+            priority
+        });
 
-            evidence.aiAnalysis = analysis;
-            await evidence.save();
-
-            // Emit Socket Event when "API" finishes
-            socketConfig.getIo().emit('ai_analysis_complete', { caseId: evidence.caseId, evidenceId: evidence.evidenceId, analysis });
-        }, 1500);
-
-        res.status(200).json({ message: "AI Diagnostic initiated. Processing results..." });
+        res.status(200).json({ 
+            message: "AI Analysis generated by Neural Heuristics", 
+            aiRecommendations: recommendations,
+            aiStrength: strength,
+            aiPriority: priority
+        });
     } catch (error) {
-        res.status(500).json({ message: "AI Diagnostic Error", error: error.message });
+        console.error("AI Analysis Error:", error);
+        res.status(500).json({ message: "Error generating AI analysis", error: error.message });
     }
 };
 
@@ -394,7 +411,7 @@ const analyzeEvidence = async (req, res) => {
     try {
         const { id } = req.params;
         const { findingsSummary, analystName } = req.body;
-        
+
         const updateData = {
             findingsSummary,
             analystName,
@@ -425,11 +442,23 @@ const analyzeEvidence = async (req, res) => {
     }
 };
 
+const analyze = async (req, res) => {
+    try {
+        const { text, type } = req.body;
+        if (!text) return res.status(400).json({ message: "Text is required" });
+        
+        const result = await analyzeForensicData(text, type);
+        res.json({ success: true, prediction: result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     register, login, getUsers, updateUserStatus, deleteUser, updateUser,
     registerCase, getCases, updateCase, deleteCase,
     addEvidence, getEvidences, updateEvidence, deleteEvidence,
     uploadLabReport, updateHearingDates, recordVerdict, upload,
     transferToLab, generateAIAnalysis, updateInvestigation, fileLegalDocs,
-    analyzeEvidence
+    analyzeEvidence, analyze
 };

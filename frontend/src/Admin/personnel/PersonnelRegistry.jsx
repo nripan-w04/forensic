@@ -40,7 +40,12 @@ export default function PersonnelRegistry() {
   const handleStatusUpdate = async (id, status) => {
     try {
       await axios.put(`http://localhost:4000/api/users/${id}/status`, { status });
-      showToast(`Personnel clearance status: ${status}`, 'success');
+      
+      const toastMessage = status === 'Approved' 
+        ? 'Personnel registration approved successfully' 
+        : 'Registration application rejected by administrator';
+      
+      showToast(toastMessage, 'success');
       fetchUsers();
     } catch (err) {
       console.error(err);

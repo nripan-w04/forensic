@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Eye, Edit, Trash2, X, Check, Activity, Package, FileText, Gavel } from 'lucide-react';
+import { Search, MapPin, Eye, Edit, Trash2, X, Check, Activity, Package, FileText, Gavel, Camera } from 'lucide-react';
 import axios from 'axios';
 import { useUI } from '../../common/UIContext';
 import { useSocket } from '../../common/SocketContext';
@@ -16,6 +16,7 @@ export default function ActiveCases() {
   const [viewingDetails, setViewingDetails] = useState(null);
   const [filingLegal, setFilingLegal] = useState(null);
   const [legalData, setLegalData] = useState({ chargeSheet: '', legalNotes: '' });
+  const [viewingImage, setViewingImage] = useState(null);
 
   const fetchCases = async () => {
     try {
@@ -45,7 +46,7 @@ export default function ActiveCases() {
       socket.on('case_status_updated', () => fetchCases());
       socket.on('evidence_added', () => { fetchCases(); fetchEvidence(); });
       socket.on('report_uploaded', () => { fetchCases(); fetchEvidence(); });
-      
+
       return () => {
         socket.off('case_status_updated');
         socket.off('evidence_added');
@@ -137,8 +138,8 @@ export default function ActiveCases() {
     }
   };
 
-  const filtered = cases.filter(c => 
-    c.caseId.toLowerCase().includes(search.toLowerCase()) || 
+  const filtered = cases.filter(c =>
+    c.caseId.toLowerCase().includes(search.toLowerCase()) ||
     c.title.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -161,7 +162,7 @@ export default function ActiveCases() {
         <table className="data-table">
           <thead>
             <tr>
-               <th>Case Identifier / FIR</th>
+              <th>Case Identifier / FIR</th>
               <th>Incident Details / Officer</th>
               <th>Location</th>
               <th>Status Module</th>
@@ -193,44 +194,44 @@ export default function ActiveCases() {
                   </td>
                   <td>
                     <div style={{
-                        padding: '8px 16px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 13, textTransform: 'uppercase', textAlign: 'center', fontWeight: 800,
-                        background: c.status === 'CLOSED' ? 'rgba(52,211,153,0.15)' : c.status === 'REPORT_READY' ? 'rgba(251,191,36,0.15)' : 'rgba(59,130,246,0.15)',
-                        color: c.status === 'CLOSED' ? '#34d399' : c.status === 'REPORT_READY' ? '#fbbf24' : '#60a5fa',
-                        border: `1px solid ${c.status === 'CLOSED' ? '#34d39960' : c.status === 'REPORT_READY' ? '#fbbf2460' : '#60a5fa60'}`,
-                        letterSpacing: '0.05em'
-                      }}>
-                        {c.status}
+                      padding: '8px 16px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 13, textTransform: 'uppercase', textAlign: 'center', fontWeight: 800,
+                      background: c.status === 'CLOSED' ? 'rgba(52,211,153,0.15)' : c.status === 'REPORT_READY' ? 'rgba(251,191,36,0.15)' : 'rgba(59,130,246,0.15)',
+                      color: c.status === 'CLOSED' ? '#34d399' : c.status === 'REPORT_READY' ? '#fbbf24' : '#60a5fa',
+                      border: `1px solid ${c.status === 'CLOSED' ? '#34d39960' : c.status === 'REPORT_READY' ? '#fbbf2460' : '#60a5fa60'}`,
+                      letterSpacing: '0.05em'
+                    }}>
+                      {c.status}
                     </div>
                   </td>
-                   <td style={{ textAlign: 'right', paddingRight: 22 }}>
-                      <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                        <button onClick={() => setViewingDetails(c)} style={{ background: 'transparent', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#34d399', cursor: 'pointer', transition: 'all 0.2s' }} title="View Progress">
-                           <Activity size={20} />
+                  <td style={{ textAlign: 'right', paddingRight: 22 }}>
+                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+                      <button onClick={() => setViewingDetails(c)} style={{ background: 'transparent', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#34d399', cursor: 'pointer', transition: 'all 0.2s' }} title="View Progress">
+                        <Activity size={20} />
+                      </button>
+                      {c.status === 'REPORT_READY' && (
+                        <button onClick={() => { setInvestigatingItem(c); setInvestigationData({ notes: c.investigationNotes || '', suspects: c.suspects?.join(', ') || '' }); }} style={{ background: 'transparent', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#d8b4fe', cursor: 'pointer', transition: 'all 0.2s', fontSize: 10, fontFamily: "'Share Tech Mono', monospace" }} title="Update Investigation">
+                          <Eye size={20} style={{ marginRight: 4 }} /> <span className='text-xs'>REVIEW</span>
                         </button>
-                        {c.status === 'REPORT_READY' && (
-                          <button onClick={() => { setInvestigatingItem(c); setInvestigationData({ notes: c.investigationNotes || '', suspects: c.suspects?.join(', ') || '' }); }} style={{ background: 'transparent', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 3, padding: '4px 8px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#d8b4fe', cursor: 'pointer', transition: 'all 0.2s', fontSize: 10, fontFamily: "'Share Tech Mono', monospace" }} title="Update Investigation">
-                             <Eye size={20} style={{ marginRight: 4 }} /> <span className='text-xs'>REVIEW</span>
+                      )}
+                      {c.status !== 'CLOSED' && c.status !== 'FILED_IN_COURT' && (
+                        <>
+                          <button onClick={() => setEditingCase(c)} style={{ background: 'transparent', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', cursor: 'pointer', transition: 'all 0.2s' }} title="Edit Case">
+                            <Edit size={20} />
                           </button>
-                        )}
-                        {c.status !== 'CLOSED' && c.status !== 'FILED_IN_COURT' && (
-                          <>
-                            <button onClick={() => setEditingCase(c)} style={{ background: 'transparent', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', cursor: 'pointer', transition: 'all 0.2s' }} title="Edit Case">
-                               <Edit size={20} />
-                            </button>
-                            <button onClick={() => handleDelete(c._id)} style={{ background: 'transparent', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', cursor: 'pointer', transition: 'all 0.2s' }} title="Delete Case">
-                               <Trash2 size={20} />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                   </td>
+                          <button onClick={() => handleDelete(c._id)} style={{ background: 'transparent', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 3, width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', cursor: 'pointer', transition: 'all 0.2s' }} title="Delete Case">
+                            <Trash2 size={20} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
                 </motion.tr>
               ))}
             </AnimatePresence>
             {!loading && filtered.length === 0 && (
-               <tr>
-                 <td colSpan="5" style={{ textAlign: 'center', padding: '60px 20px', fontFamily: "'Share Tech Mono', monospace", color: '#52525b', fontSize: 11, letterSpacing: '0.1em' }}>NO CASES EXCEEDING QUERY PARAMETERS</td>
-               </tr>
+              <tr>
+                <td colSpan="5" style={{ textAlign: 'center', padding: '60px 20px', fontFamily: "'Share Tech Mono', monospace", color: '#52525b', fontSize: 11, letterSpacing: '0.1em' }}>NO CASES EXCEEDING QUERY PARAMETERS</td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -240,7 +241,7 @@ export default function ActiveCases() {
           {viewingDetails && (
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
+              style={{ position: 'fixed', top: 0, left: 280, right: 0, bottom: 0, background: 'rgba(4,4,10,0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
             >
               <motion.div
                 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }}
@@ -248,7 +249,7 @@ export default function ActiveCases() {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 24, marginBottom: 24 }}>
                   <div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#ef4444' }}>CASE DOSSIER: {viewingDetails.caseId}</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 18, color: '#ef4444', fontWeight: 700 }}>CASE DOSSIER: {viewingDetails.caseId}</div>
                     <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 32, fontWeight: 700, color: '#f4f4f5', textTransform: 'uppercase', marginTop: 4 }}>{viewingDetails.title}</h2>
                   </div>
                   <button onClick={() => setViewingDetails(null)} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#71717a', cursor: 'pointer', padding: 8, borderRadius: 4 }}><X size={20} /></button>
@@ -256,7 +257,7 @@ export default function ActiveCases() {
 
                 {/* Progress Tracker */}
                 <div style={{ marginBottom: 40 }}>
-                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#71717a', marginBottom: 20, letterSpacing: '0.2em' }}>PROGRESS STATUS</div>
+                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#71717a', marginBottom: 20, letterSpacing: '0.2em', fontWeight: 700 }}>PROGRESS STATUS</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative' }}>
                     <div style={{ position: 'absolute', top: 12, left: 0, right: 0, h: 2, background: 'rgba(255,255,255,0.05)', zIndex: 1 }} />
                     {[
@@ -276,7 +277,7 @@ export default function ActiveCases() {
                           <div style={{ width: 24, height: 24, borderRadius: '50%', background: isComplete ? '#ef4444' : '#111116', border: `2px solid ${isComplete ? '#ef4444' : 'rgba(255,255,255,0.1)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: isComplete ? '0 0 15px rgba(239,68,68,0.3)' : 'none' }}>
                             {isComplete && <Check size={12} color="#fff" />}
                           </div>
-                          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 8, color: isComplete ? '#f4f4f5' : '#52525b', textAlign: 'center' }}>{s.label}</div>
+                          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: isComplete ? '#f4f4f5' : '#52525b', textAlign: 'center' }}>{s.label}</div>
                         </div>
                       );
                     })}
@@ -285,19 +286,24 @@ export default function ActiveCases() {
 
                 <div className="responsive-grid-2" style={{ gap: 32 }}>
                   <div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#71717a', marginBottom: 16 }}>COLLECTED EVIDENCE</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#71717a', marginBottom: 16, fontWeight: 700 }}>COLLECTED EVIDENCE</div>
                     <div style={{ display: 'grid', gap: 12 }}>
                       {evidence.filter(e => e.caseId === viewingDetails.caseId).map(e => (
                         <div key={e._id} style={{ padding: 16, background: '#111116', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4 }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                            <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#3b82f6' }}>{e.evidenceId}</span>
-                            <span style={{ fontSize: 9, padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 2, color: '#a1a1aa' }}>{e.type}</span>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, alignItems: 'center' }}>
+                            <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#3b82f6', fontWeight: 700 }}>{e.evidenceId}</span>
+                            <span style={{ fontSize: 12, padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#a1a1aa', fontWeight: 600, textTransform: 'uppercase' }}>{e.type}</span>
                           </div>
-                          <div style={{ fontSize: 13, color: '#d4d4d8', marginBottom: 12 }}>{e.description}</div>
+                          <div style={{ fontSize: 16, color: '#d4d4d8', marginBottom: 16, lineHeight: 1.6 }}>{e.description}</div>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                            {e.images && e.images.length > 0 && (
+                              <button onClick={() => setViewingImage({ images: e.images.map(img => `http://localhost:4000/${img}`), index: 0 })} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#60a5fa', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 4, padding: '6px 14px', fontSize: 13, fontFamily: "'Share Tech Mono', monospace", fontWeight: 700, cursor: 'pointer' }}>
+                                <Eye size={16} /> VIEW IMAGES ({e.images.length})
+                              </button>
+                            )}
                             {e.labReports?.map((path, idx) => (
-                              <a key={idx} href={`http://localhost:4000/${path}`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#34d399', textDecoration: 'none', fontSize: 11, fontFamily: "'Share Tech Mono', monospace", padding: '4px 10px', background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 4, fontWeight: 700 }}>
-                                <FileText size={14} /> REPORT_{idx + 1}
+                              <a key={idx} href={`http://localhost:4000/${path}`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#34d399', textDecoration: 'none', fontSize: 13, fontFamily: "'Share Tech Mono', monospace", padding: '6px 14px', background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', borderRadius: 4, fontWeight: 700 }}>
+                                <FileText size={16} /> REPORT_{idx + 1}
                               </a>
                             ))}
                           </div>
@@ -310,13 +316,13 @@ export default function ActiveCases() {
                   </div>
 
                   <div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#71717a', marginBottom: 16 }}>INVESTIGATION DETAILS</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#71717a', marginBottom: 16, fontWeight: 700 }}>INVESTIGATION DETAILS</div>
                     <div style={{ display: 'grid', gap: 20 }}>
                       <div style={{ padding: 16, background: 'rgba(239,68,68,0.02)', border: '1px solid rgba(239,68,68,0.05)', borderRadius: 4 }}>
-                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#ef4444', marginBottom: 8 }}>INCIDENT LOG</div>
-                        <p style={{ fontSize: 14, color: '#d4d4d8', lineHeight: 1.6 }}>{viewingDetails.description}</p>
+                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#ef4444', marginBottom: 12, fontWeight: 700 }}>INCIDENT LOG</div>
+                        <p style={{ fontSize: 18, color: '#d4d4d8', lineHeight: 1.8, fontWeight: 500 }}>{viewingDetails.description}</p>
                       </div>
-                      
+
                       {viewingDetails.investigationNotes && (
                         <div style={{ padding: 16, background: 'rgba(59,130,246,0.02)', border: '1px solid rgba(59,130,246,0.1)', borderRadius: 4 }}>
                           <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#3b82f6', marginBottom: 8 }}>OFFICER NOTES</div>
@@ -325,10 +331,10 @@ export default function ActiveCases() {
                       )}
 
                       <div>
-                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#71717a', marginBottom: 8 }}>IDENTIFIED SUSPECTS</div>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#71717a', marginBottom: 12, fontWeight: 700 }}>IDENTIFIED SUSPECTS</div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                           {viewingDetails.suspects?.map((s, idx) => (
-                            <span key={idx} style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 20, fontSize: 12, color: '#f4f4f5' }}>{s}</span>
+                            <span key={idx} style={{ padding: '8px 18px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 20, fontSize: 16, color: '#f4f4f5', fontWeight: 600 }}>{s}</span>
                           ))}
                         </div>
                       </div>
@@ -349,11 +355,11 @@ export default function ActiveCases() {
 
                       {viewingDetails.status === 'UNDER_INVESTIGATION' && (
                         <div style={{ marginTop: 20, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 20 }}>
-                          <button 
+                          <button
                             onClick={() => setFilingLegal(viewingDetails)}
                             style={{ width: '100%', padding: '12px', background: '#3b82f6', border: 'none', color: '#fff', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
                           >
-                             <Gavel size={16} /> DRAFT & TRANSMIT TO COURT
+                            <Gavel size={16} /> DRAFT & TRANSMIT TO COURT
                           </button>
                         </div>
                       )}
@@ -370,7 +376,7 @@ export default function ActiveCases() {
           {editingCase && (
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
+              style={{ position: 'fixed', top: 0, left: 280, right: 0, bottom: 0, background: 'rgba(4,4,10,0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
             >
               <motion.div
                 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }}
@@ -383,12 +389,12 @@ export default function ActiveCases() {
                 <form onSubmit={handleEditSubmit} style={{ display: 'grid', gap: 16 }}>
                   <div>
                     <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 6 }}>INCIDENT TITLE</label>
-                    <input type="text" value={editingCase.title} onChange={e => setEditingCase({...editingCase, title: e.target.value})} required style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
+                    <input type="text" value={editingCase.title} onChange={e => setEditingCase({ ...editingCase, title: e.target.value })} required style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
                   </div>
                   <div className="responsive-grid-2">
                     <div>
                       <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 6 }}>CATEGORY</label>
-                      <select value={editingCase.category} onChange={e => setEditingCase({...editingCase, category: e.target.value})} style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }}>
+                      <select value={editingCase.category} onChange={e => setEditingCase({ ...editingCase, category: e.target.value })} style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }}>
                         <option>Theft/Robbery</option>
                         <option>Homicide</option>
                         <option>Cybercrime</option>
@@ -399,22 +405,22 @@ export default function ActiveCases() {
                     </div>
                     <div>
                       <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 6 }}>LOCATION</label>
-                      <input type="text" value={editingCase.location} onChange={e => setEditingCase({...editingCase, location: e.target.value})} required style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
+                      <input type="text" value={editingCase.location} onChange={e => setEditingCase({ ...editingCase, location: e.target.value })} required style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
                     </div>
                   </div>
                   <div className="responsive-grid-2">
                     <div>
                       <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 6 }}>INVESTIGATING OFFICER</label>
-                      <input type="text" value={editingCase.investigatingOfficer || ''} onChange={e => setEditingCase({...editingCase, investigatingOfficer: e.target.value})} style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
+                      <input type="text" value={editingCase.investigatingOfficer || ''} onChange={e => setEditingCase({ ...editingCase, investigatingOfficer: e.target.value })} style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
                     </div>
                   </div>
                   <div>
                     <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 6 }}>SUSPECTS (Comma separated)</label>
-                    <input type="text" value={Array.isArray(editingCase.suspects) ? editingCase.suspects.join(', ') : ''} onChange={e => setEditingCase({...editingCase, suspects: e.target.value.split(',').map(s => s.trim())})} style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
+                    <input type="text" value={Array.isArray(editingCase.suspects) ? editingCase.suspects.join(', ') : ''} onChange={e => setEditingCase({ ...editingCase, suspects: e.target.value.split(',').map(s => s.trim()) })} style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 6 }}>INITIAL INCIDENT REPORT</label>
-                    <textarea value={editingCase.description} onChange={e => setEditingCase({...editingCase, description: e.target.value})} required style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 80 }} />
+                    <textarea value={editingCase.description} onChange={e => setEditingCase({ ...editingCase, description: e.target.value })} required style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 80 }} />
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
                     <button type="submit" style={{ padding: '10px 20px', background: '#dc2626', border: 'none', color: '#fff', borderRadius: 3, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11, display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -432,7 +438,7 @@ export default function ActiveCases() {
           {investigatingItem && (
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.85)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
+              style={{ position: 'fixed', top: 0, left: 280, right: 0, bottom: 0, background: 'rgba(4,4,10,0.85)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
             >
               <motion.div
                 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }}
@@ -445,11 +451,11 @@ export default function ActiveCases() {
                 <form onSubmit={handleInvestigationUpdate} style={{ display: 'grid', gap: 16 }}>
                   <div>
                     <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 6 }}>INVESTIGATION NOTES / FINDINGS</label>
-                    <textarea value={investigationData.notes} onChange={e => setInvestigationData({...investigationData, notes: e.target.value})} placeholder="Detailed notes after reviewing forensic report..." required style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 120 }} />
+                    <textarea value={investigationData.notes} onChange={e => setInvestigationData({ ...investigationData, notes: e.target.value })} placeholder="Detailed notes after reviewing forensic report..." required style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 120 }} />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 6 }}>UPDATE SUSPECTS (Comma separated)</label>
-                    <input type="text" value={investigationData.suspects} onChange={e => setInvestigationData({...investigationData, suspects: e.target.value})} placeholder="e.g. John Doe, Mark Smith" style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
+                    <input type="text" value={investigationData.suspects} onChange={e => setInvestigationData({ ...investigationData, suspects: e.target.value })} placeholder="e.g. John Doe, Mark Smith" style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', color: '#fff', borderRadius: 3, outline: 'none' }} />
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
                     <button type="submit" style={{ padding: '10px 24px', background: '#d8b4fe', border: 'none', color: '#000', borderRadius: 3, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -466,7 +472,7 @@ export default function ActiveCases() {
           {filingLegal && (
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.85)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}
+              style={{ position: 'fixed', top: 0, left: 280, right: 0, bottom: 0, background: 'rgba(4,4,10,0.85)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}
             >
               <motion.div
                 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }}
@@ -479,30 +485,76 @@ export default function ActiveCases() {
                 <form onSubmit={handleLegalFiling} style={{ display: 'grid', gap: 16 }}>
                   <div>
                     <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 8 }}>OFFICIAL CHARGE SHEET</label>
-                    <textarea 
-                      value={legalData.chargeSheet} 
-                      onChange={e => setLegalData({...legalData, chargeSheet: e.target.value})} 
-                      placeholder="Enter specific charges and legal violations..." 
-                      required 
-                      style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '14px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 140, fontSize: 15, lineHeight: 1.6 }} 
+                    <textarea
+                      value={legalData.chargeSheet}
+                      onChange={e => setLegalData({ ...legalData, chargeSheet: e.target.value })}
+                      placeholder="Enter specific charges and legal violations..."
+                      required
+                      style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '14px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 140, fontSize: 15, lineHeight: 1.6 }}
                     />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#a1a1aa', marginBottom: 8 }}>LEGAL PRECEDENTS / NOTES</label>
-                    <textarea 
-                      value={legalData.legalNotes} 
-                      onChange={e => setLegalData({...legalData, legalNotes: e.target.value})} 
-                      placeholder="Relevant legal codes or investigative summaries..." 
-                      required 
-                      style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '14px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 100, fontSize: 15, lineHeight: 1.6 }} 
+                    <textarea
+                      value={legalData.legalNotes}
+                      onChange={e => setLegalData({ ...legalData, legalNotes: e.target.value })}
+                      placeholder="Relevant legal codes or investigative summaries..."
+                      required
+                      style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '14px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 100, fontSize: 15, lineHeight: 1.6 }}
                     />
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
                     <button type="submit" style={{ padding: '12px 28px', background: '#3b82f6', border: 'none', color: '#fff', borderRadius: 3, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>
-                       OFFICIALLY FILE IN COURT
+                      OFFICIALLY FILE IN COURT
                     </button>
                   </div>
                 </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Image Preview Modal with Slider */}
+        <AnimatePresence>
+          {viewingImage && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setViewingImage(null)}
+              style={{ position: 'fixed', top: 0, left: 280, right: 0, bottom: 0, background: 'rgba(4,4,10,0.95)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, cursor: 'pointer' }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                style={{ position: 'relative', maxWidth: '85vw', maxHeight: '85vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              >
+                <img 
+                  src={viewingImage.images[viewingImage.index]} 
+                  alt={`Evidence ${viewingImage.index + 1}`} 
+                  style={{ maxWidth: '100%', maxHeight: '75vh', borderRadius: 8, border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 0 50px rgba(0,0,0,0.8)' }} 
+                />
+                {viewingImage.images.length > 1 && (
+                  <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 24 }}>
+                    <button 
+                      onClick={() => setViewingImage({ ...viewingImage, index: (viewingImage.index - 1 + viewingImage.images.length) % viewingImage.images.length })}
+                      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '8px 16px', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 12 }}
+                    >
+                      PREV
+                    </button>
+                    <div style={{ color: '#71717a', fontFamily: "'Share Tech Mono', monospace", fontSize: 14 }}>
+                      {viewingImage.index + 1} / {viewingImage.images.length}
+                    </div>
+                    <button 
+                      onClick={() => setViewingImage({ ...viewingImage, index: (viewingImage.index + 1) % viewingImage.images.length })}
+                      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '8px 16px', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 12 }}
+                    >
+                      NEXT
+                    </button>
+                  </div>
+                )}
+
+                <button onClick={() => setViewingImage(null)} style={{ position: 'absolute', top: -50, right: 0, background: 'none', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, fontFamily: "'Share Tech Mono', monospace", fontSize: 14 }}>
+                  <X size={20} /> CLOSE
+                </button>
               </motion.div>
             </motion.div>
           )}

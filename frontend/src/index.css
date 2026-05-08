@@ -1,14 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap');
 
 :root {
-  --primary: #ff1a1a;
-  --primary-glow: rgba(255, 26, 26, 0.4);
-  --bg-dark: #070707;
-  --bg-card: #111111;
+  --primary: #22d3ee;
+  --primary-glow: rgba(34, 211, 238, 0.4);
+  --bg-dark: #09090b;
+  --bg-card: #111113;
   --text-main: #ffffff;
-  --text-dim: #ffffff;
-  --border: #222222;
-  --accent: #333333;
+  --text-dim: #a1a1aa;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #22d3ee;
 }
 
 * {
@@ -28,7 +28,7 @@ a, button {
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
@@ -143,6 +143,7 @@ h1, h2, h3, h4, .font-tech {
 .text-red-500 { color: #ff1a1a; }
 .text-zinc-300 { color: #d4d4d8; }
 .text-zinc-500 { color: #ffffff; }
+.font-admin { font-family: 'Plus Jakarta Sans', sans-serif; }
 .text-xs { font-size: 0.92rem; }
 .text-sm { font-size: 1.05rem; }
 .text-xl { font-size: 1.25rem; }

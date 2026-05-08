@@ -28,10 +28,10 @@ export default function EvidenceOverview() {
   const analyzedCount = evidence.filter(e => e.status === 'ANALYZED').length;
 
   const STATS = [
-    { label: 'Total Registered', value: totalCount, icon: Package, color: '#3b82f6', delta: 'Database size' },
-    { label: 'In Laboratory', value: inLabCount, icon: Truck, color: '#fbbf24', delta: 'Under analysis' },
-    { label: 'Field Collected', value: collectedCount, icon: ShieldAlert, color: '#34d399', delta: 'Awaiting transfer' },
-    { label: 'Analyzed Results', value: analyzedCount, icon: Archive, color: '#71717a', delta: 'Reports received' },
+    { label: 'COLLECTOR', value: totalCount, icon: Package, color: '#ef4444', delta: 'Total Registered' },
+    { label: 'LAB', value: inLabCount, icon: Truck, color: '#fbbf24', delta: 'Collector → Lab' },
+    { label: 'COURT', value: analyzedCount, icon: Archive, color: '#34d399', delta: 'Lab → Results' },
+    { label: 'POLICE', value: collectedCount, icon: ShieldAlert, color: '#3b82f6', delta: 'Active Custody' },
   ];
 
   // Dynamic activity log based on real evidence

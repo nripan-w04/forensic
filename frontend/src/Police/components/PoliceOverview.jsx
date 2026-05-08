@@ -32,10 +32,10 @@ export default function PoliceOverview() {
   const reportsReadyCount = cases.filter(c => c.status === 'REPORT_READY' || c.status === 'ANALYZED').length;
 
   const STATS = [
-    { label: 'Active Cases', value: activeCasesCount, icon: Search, color: '#3b82f6', delta: 'Ongoing investigations' },
-    { label: 'In Forensic Lab', value: inLabCount, icon: FileText, color: '#fbbf24', delta: 'Awaiting lab action' },
-    { label: 'Reports Ready', value: reportsReadyCount, icon: AlertTriangle, color: '#34d399', delta: 'Available for review' },
-    { label: 'Total Investigations', value: cases.length, icon: ShieldAlert, color: '#ef4444', delta: 'Total records' },
+    { label: 'POLICE', value: activeCasesCount, icon: Search, color: '#3b82f6', delta: 'Active Cases' },
+    { label: 'LAB', value: inLabCount, icon: FileText, color: '#fbbf24', delta: 'Collector → Lab' },
+    { label: 'COURT', value: reportsReadyCount, icon: AlertTriangle, color: '#34d399', delta: 'Lab → Results' },
+    { label: 'COLLECTOR', value: evidence.length, icon: ShieldAlert, color: '#ef4444', delta: 'Total Registered' },
   ];
 
   // Combine cases and evidence to create a dynamic activity log, sorted by date in memory

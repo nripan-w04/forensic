@@ -17,6 +17,9 @@ const evidenceSchema = new mongoose.Schema({
     transferStatus: { type: String, default: "In Custody" },
     images: [{ type: String }],
     aiAnalysis: { type: String },
+    aiStrength: { type: String },
+    aiPriority: { type: String },
+    aiRecommendations: { type: String },
     findingsSummary: { type: String },
     analystName: { type: String },
     chainOfCustody: [{

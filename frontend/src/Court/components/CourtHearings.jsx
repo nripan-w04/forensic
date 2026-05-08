@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search } from 'lucide-react';
+import { Search, Eye, X, Check, Package } from 'lucide-react';
 import axios from 'axios';
 import { useUI } from '../../common/UIContext';
 
@@ -12,6 +12,10 @@ export default function CourtHearings() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [newHearingDate, setNewHearingDate] = useState('');
   const [judgment, setJudgment] = useState('');
+  const [viewingCase, setViewingCase] = useState(null);
+  const [evidenceList, setEvidenceList] = useState([]);
+  const [loadingEvidence, setLoadingEvidence] = useState(false);
+  const [viewingAI, setViewingAI] = useState(null);
 
   const fetchCases = async () => {
     try {
@@ -28,6 +32,24 @@ export default function CourtHearings() {
   useEffect(() => {
     fetchCases();
   }, []);
+
+  const fetchEvidence = async (caseId) => {
+    setLoadingEvidence(true);
+    try {
+      const res = await axios.get(`http://localhost:4000/api/evidence?caseId=${caseId}`);
+      setEvidenceList(res.data);
+    } catch (err) {
+      console.error(err);
+      showToast('Error fetching evidence', 'error');
+    } finally {
+      setLoadingEvidence(false);
+    }
+  };
+
+  const handleOpenDetails = (c) => {
+    setViewingCase(c);
+    fetchEvidence(c.caseId);
+  };
 
 
   const handleVerdictChange = async (id, judgment) => {
@@ -62,7 +84,7 @@ export default function CourtHearings() {
 
   return (
     <>
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', position: 'relative', zIndex: 5 }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', position: 'relative', zIndex: 5, marginTop: 68 }}>
         <div>
           <p className="page-eyebrow">{'//'} LEGAL AFFAIRS</p>
           <h1 className="page-title">
@@ -81,6 +103,7 @@ export default function CourtHearings() {
             <tr>
               <th>Docket / Case ID</th>
               <th>Incident Details</th>
+              <th>Case Details</th>
               <th>Legal Status</th>
               <th>Actions</th>
             </tr>
@@ -97,6 +120,14 @@ export default function CourtHearings() {
                   <td>
                     <div style={{ display: 'inline-block', padding: '6px 12px', background: 'rgba(255,255,255,0.08)', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#ffffff', marginBottom: 6, textTransform: 'uppercase', fontWeight: 700 }}>{c.category}</div>
                     <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 20, color: '#d4d4d8', maxWidth: 320, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>{c.title}</div>
+                  </td>
+                  <td>
+                    <button 
+                      onClick={() => handleOpenDetails(c)}
+                      style={{ padding: '8px 16px', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.3)', color: '#60a5fa', borderRadius: 4, fontSize: 12, fontFamily: "'Share Tech Mono', monospace", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700 }}
+                    >
+                      <Eye size={14} /> VIEW CASE DOSSIER
+                    </button>
                   </td>
                   <td>
                     <div style={{
@@ -133,6 +164,222 @@ export default function CourtHearings() {
         </table>
 
         <AnimatePresence>
+          {viewingCase && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.95)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
+            >
+              <motion.div
+                initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }}
+                style={{ width: '100%', maxWidth: 950, background: '#0a0a12', border: '1px solid rgba(59,130,246,0.4)', borderRadius: 4, maxHeight: '95vh', overflowY: 'auto', position: 'relative', padding: 40 }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 24, marginBottom: 32 }}>
+                  <div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#3b82f6', fontWeight: 700, letterSpacing: '0.1em' }}>COURT EXHIBIT / FULL CASE DOSSIER: {viewingCase.caseId}</div>
+                    <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 36, fontWeight: 700, color: '#f4f4f5', textTransform: 'uppercase', marginTop: 8 }}>{viewingCase.title}</h2>
+                  </div>
+                  <button onClick={() => setViewingCase(null)} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', cursor: 'pointer', padding: '10px 20px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 13 }}>CLOSE DOSSIER</button>
+                </div>
+
+                {/* SECTION: PRIMARY CASE METADATA */}
+                <div style={{ marginBottom: 40 }}>
+                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#71717a', marginBottom: 20, letterSpacing: '0.2em', fontWeight: 700 }}>// CASE REGISTRY METADATA</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
+                    {[
+                      { label: 'FIR NUMBER', value: viewingCase.firNumber || 'UNASSIGNED' },
+                      { label: 'REGISTRATION DATE', value: viewingCase.date },
+                      { label: 'CATEGORY', value: viewingCase.category },
+                      { label: 'LITIGATION STATUS', value: viewingCase.status },
+                      { label: 'LOCATION', value: viewingCase.location },
+                      { label: 'INVESTIGATING OFFICER', value: viewingCase.investigatingOfficer || 'PENDING' },
+                      { label: 'COURT AUTHORITY', value: viewingCase.courtAuthority || 'HIGH COURT OF JUSTICE' },
+                      { label: 'CREATION TIMESTAMP', value: new Date(viewingCase.createdAt).toLocaleString() }
+                    ].map((item, idx) => (
+                      <div key={idx} style={{ padding: 16, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4 }}>
+                         <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 6, fontWeight: 700 }}>{item.label}</div>
+                         <div style={{ fontSize: 15, color: '#fff', fontWeight: 600 }}>{item.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* SECTION: INCIDENT & INVESTIGATION LOGS */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40 }}>
+                   <div>
+                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#71717a', marginBottom: 16, letterSpacing: '0.1em', fontWeight: 700 }}>// INCIDENT REPORT</div>
+                      <div style={{ padding: 24, background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.1)', borderRadius: 4, color: '#d4d4d8', fontSize: 15, lineHeight: 1.8 }}>
+                        {viewingCase.description}
+                      </div>
+                   </div>
+                   <div>
+                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#71717a', marginBottom: 16, letterSpacing: '0.1em', fontWeight: 700 }}>// POLICE INVESTIGATION NOTES</div>
+                      <div style={{ padding: 24, background: 'rgba(168,85,247,0.05)', border: '1px solid rgba(168,85,247,0.1)', borderRadius: 4, color: '#d4d4d8', fontSize: 15, lineHeight: 1.8 }}>
+                        {viewingCase.investigationNotes || 'No official investigation logs recorded by the police department.'}
+                      </div>
+                   </div>
+                </div>
+
+                {/* SECTION: LEGAL DOCUMENTS */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40 }}>
+                   <div>
+                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#71717a', marginBottom: 16, letterSpacing: '0.1em', fontWeight: 700 }}>// OFFICIAL CHARGE SHEET</div>
+                      <div style={{ padding: 24, background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', borderRadius: 4, color: '#fca5a5', fontSize: 15, lineHeight: 1.8, fontFamily: "'Share Tech Mono', monospace" }}>
+                        {viewingCase.chargeSheet || 'CHARGE SHEET NOT YET FILED.'}
+                      </div>
+                   </div>
+                   <div>
+                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#71717a', marginBottom: 16, letterSpacing: '0.1em', fontWeight: 700 }}>// LEGAL PRECEDENTS & NOTES</div>
+                      <div style={{ padding: 24, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 4, color: '#d4d4d8', fontSize: 15, lineHeight: 1.8 }}>
+                        {viewingCase.legalNotes || 'No legal notes provided with filing.'}
+                      </div>
+                   </div>
+                </div>
+
+                {/* SECTION: SUSPECTS & JUDGMENT */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40 }}>
+                   <div>
+                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#71717a', marginBottom: 16, letterSpacing: '0.1em', fontWeight: 700 }}>// IDENTIFIED SUSPECTS</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                        {viewingCase.suspects && viewingCase.suspects.length > 0 ? (
+                          viewingCase.suspects.map((s, i) => (
+                            <span key={i} style={{ padding: '8px 16px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, fontSize: 14, color: '#fff', fontWeight: 600 }}>{s}</span>
+                          ))
+                        ) : (
+                          <span style={{ fontSize: 14, color: '#52525b' }}>NO SUSPECTS REGISTERED</span>
+                        )}
+                      </div>
+                   </div>
+                   {viewingCase.judgment && (
+                     <div>
+                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#fbbf24', marginBottom: 16, letterSpacing: '0.1em', fontWeight: 700 }}>// FINAL VERDICT & JUDGMENT</div>
+                        <div style={{ padding: 24, background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.3)', borderRadius: 4, color: '#fbbf24', fontSize: 16, fontWeight: 700, lineHeight: 1.8 }}>
+                          {viewingCase.judgment}
+                        </div>
+                     </div>
+                   )}
+                </div>
+
+                {/* SECTION: EVIDENCE VAULT & NEURAL ANALYSIS */}
+                <div style={{ marginTop: 40 }}>
+                   <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#3b82f6', marginBottom: 24, letterSpacing: '0.2em', fontWeight: 700 }}>// FORENSIC EVIDENCE VAULT & NEURAL INSIGHTS</div>
+                   <div style={{ display: 'grid', gap: 20 }}>
+                      {loadingEvidence ? (
+                        <div style={{ padding: 40, textAlign: 'center', color: '#71717a', fontFamily: "'Share Tech Mono', monospace", fontSize: 14 }}>SYNCHRONIZING WITH FORENSIC DATABASE...</div>
+                      ) : evidenceList.length === 0 ? (
+                        <div style={{ padding: 40, textAlign: 'center', color: '#52525b', fontFamily: "'Share Tech Mono', monospace", fontSize: 14, border: '1px dashed rgba(255,255,255,0.1)' }}>NO REGISTERED EVIDENCE FOUND FOR THIS DOCKET</div>
+                      ) : evidenceList.map((ev, idx) => (
+                        <div key={idx} style={{ padding: 24, background: 'rgba(59,130,246,0.03)', border: '1px solid rgba(59,130,246,0.15)', borderRadius: 4 }}>
+                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 12 }}>
+                              <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                                 <Package size={20} color="#3b82f6" />
+                                 <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#fff', fontWeight: 700 }}>{ev.evidenceId}</div>
+                                 <div style={{ padding: '4px 10px', background: 'rgba(59,130,246,0.1)', color: '#60a5fa', borderRadius: 2, fontSize: 12, fontWeight: 700 }}>{ev.type}</div>
+                              </div>
+                              <div style={{ fontSize: 12, color: '#10b981', background: 'rgba(16,185,129,0.1)', padding: '4px 12px', borderRadius: 2, fontWeight: 700 }}>STATUS: {ev.status}</div>
+                           </div>
+
+                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, marginBottom: 24 }}>
+                              <div>
+                                 <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 4 }}>COLLECTED BY</div>
+                                 <div style={{ fontSize: 14, color: '#f4f4f5', fontWeight: 600 }}>{ev.collectedBy}</div>
+                              </div>
+                              <div>
+                                 <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 4 }}>COLLECTION DATE</div>
+                                 <div style={{ fontSize: 14, color: '#f4f4f5', fontWeight: 600 }}>{ev.collectedDate}</div>
+                              </div>
+                              <div>
+                                 <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 4 }}>BARCODE / TRACKING</div>
+                                 <div style={{ fontSize: 14, color: '#f4f4f5', fontWeight: 600 }}>{ev.barcode || 'NO_TAG'}</div>
+                              </div>
+                              <div>
+                                 <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 4 }}>TRANSFER STATUS</div>
+                                 <div style={{ fontSize: 14, color: '#f4f4f5', fontWeight: 600 }}>{ev.transferStatus}</div>
+                              </div>
+                           </div>
+
+                           <div style={{ marginBottom: 24 }}>
+                              <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 8 }}>EVIDENCE DESCRIPTION</div>
+                              <div style={{ fontSize: 15, color: '#d4d4d8', lineHeight: 1.6 }}>{ev.description}</div>
+                           </div>
+
+                           {/* LAB FINDINGS & AI BUTTON */}
+                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+                              <div style={{ padding: 16, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4 }}>
+                                 <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 8, fontWeight: 700 }}>LAB FINDINGS SUMMARY</div>
+                                 <div style={{ fontSize: 14, color: '#fff', lineHeight: 1.6 }}>{ev.findingsSummary || 'Analytical reports pending laboratory results.'}</div>
+                                 <div style={{ fontSize: 12, color: '#3b82f6', marginTop: 12, fontFamily: "'Share Tech Mono', monospace" }}>ANALYST: {ev.analystName || 'N/A'}</div>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
+                                 <button 
+                                    onClick={() => setViewingAI(ev)}
+                                    style={{ width: '100%', padding: '16px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', color: '#d8b4fe', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'all 0.2s' }}
+                                 >
+                                    <Package size={18} /> VIEW NEURAL AI INSIGHTS
+                                 </button>
+                                 <div style={{ fontSize: 11, color: '#71717a', textAlign: 'center', fontFamily: "'Share Tech Mono', monospace" }}>
+                                    SECURE DIAGNOSTIC ACCESS REQUIRED
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                      ))}
+                   </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {viewingAI && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+                style={{ width: '100%', maxWidth: 550, background: '#0a0a12', border: '1px solid rgba(168,85,247,0.4)', borderRadius: 4, padding: 32, maxHeight: '85vh', overflowY: 'auto' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(168,85,247,0.2)', paddingBottom: 16, marginBottom: 24, marginTop: 17 }}>
+                  <div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#a855f7', fontWeight: 700 }}>NEURAL SENTRY DIAGNOSTICS</div>
+                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 24, fontWeight: 700, color: '#f4f4f5', textTransform: 'uppercase' }}>{viewingAI.evidenceId}</div>
+                  </div>
+                  <button onClick={() => setViewingAI(null)} style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}><X size={24} /></button>
+                </div>
+
+                <div style={{ display: 'grid', gap: 24 }}>
+                   <div style={{ padding: 20, background: 'rgba(168,85,247,0.05)', border: '1px solid rgba(168,85,247,0.1)', borderRadius: 4, maxHeight: 300, overflowY: 'auto' }}>
+                      <div style={{ fontSize: 12, color: '#d8b4fe', fontFamily: "'Share Tech Mono', monospace", marginBottom: 12, fontWeight: 700 }}>// AI RECOMMENDATIONS</div>
+                      <div style={{ fontSize: 15, color: '#fff', fontStyle: 'italic', lineHeight: 1.6 }}>
+                        "{viewingAI.aiRecommendations || 'No automated recommendations generated for this evidence profile.'}"
+                      </div>
+                   </div>
+
+                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                      <div style={{ padding: 16, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4 }}>
+                         <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 6 }}>PRIORITY LEVEL</div>
+                         <div style={{ fontSize: 16, color: '#a855f7', fontWeight: 700, textTransform: 'uppercase' }}>{viewingAI.aiPriority || 'NORMAL'}</div>
+                      </div>
+                      <div style={{ padding: 16, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4 }}>
+                         <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 6 }}>ANALYSIS STRENGTH</div>
+                         <div style={{ fontSize: 16, color: '#10b981', fontWeight: 700 }}>{viewingAI.aiStrength || '0%'}</div>
+                      </div>
+                   </div>
+
+                   <div style={{ fontSize: 12, color: '#52525b', fontFamily: "'Share Tech Mono', monospace", lineHeight: 1.5 }}>
+                      NOTICE: This analysis is generated by the Neural Sentry AI engine and should be used as a supplementary diagnostic tool alongside official lab findings.
+                   </div>
+
+                   <button 
+                      onClick={() => setViewingAI(null)}
+                      style={{ width: '100%', padding: '14px', background: '#a855f7', border: 'none', color: '#000', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 13, fontWeight: 700 }}
+                   >
+                      ACKNOWLEDGE & CLOSE
+                   </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
           {selectedCase && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
               <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} style={{ width: '100%', maxWidth: 600, background: '#0a0a12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, padding: 32 }}>

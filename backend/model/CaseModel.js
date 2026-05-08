@@ -5,10 +5,10 @@ const caseSchema = new mongoose.Schema({
     title: { type: String, required: true },
     date: { type: String, required: true },
     location: { type: String, required: true },
-    category: { type: String, required: true },
+    category: { type: String, required: true, default: "Other" },
     description: { type: String, required: true },
-    status: { 
-        type: String, 
+    status: {
+        type: String,
         default: "OPEN",
         enum: ["OPEN", "COLLECTED", "SENT_TO_LAB", "ANALYZED", "REPORT_READY", "UNDER_INVESTIGATION", "FILED_IN_COURT", "CLOSED"]
     },
@@ -23,6 +23,7 @@ const caseSchema = new mongoose.Schema({
     judgment: { type: String },
     courtAuthority: { type: String },
     closedDate: { type: Date },
+    caseImage: { type: String },
     createdAt: { type: Date, default: Date.now }
 });
 

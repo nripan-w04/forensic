@@ -7,8 +7,14 @@ import { useUI } from '../../common/UIContext';
 export default function RegisterCase() {
   const { showToast } = useUI();
   const [formData, setFormData] = useState({
-    title: '', date: '', location: '', category: 'Theft/Robbery', description: '',
-    firNumber: '', suspects: '', investigatingOfficer: ''
+    title: '',
+    date: '',
+    location: '',
+    category: 'Theft/Robbery',
+    description: '',
+    firNumber: '',
+    suspects: '',
+    investigatingOfficer: ''
   });
   const [error, setError] = useState('');
 
@@ -17,6 +23,11 @@ export default function RegisterCase() {
   const validate = () => {
     if (formData.title.trim().length < 5) return 'Incident Title must be at least 5 characters.';
     if (!formData.date) return 'Incident Date is required.';
+    const selectedDate = new Date(formData.date);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    if (selectedDate > today) return 'Incident Date cannot be in the future.';
+    if (selectedDate.getFullYear() > 9999) return 'Invalid Year detected.';
     if (formData.location.trim().length < 5) return 'Location must be specific (min 5 characters).';
     if (formData.description.trim().length < 20) return 'Detailed incident report must be at least 20 characters.';
     return '';
@@ -31,20 +42,22 @@ export default function RegisterCase() {
       return;
     }
     setError('');
-    
+
     try {
-      await axios.post('http://localhost:4000/api/cases', {
+      const payload = {
         ...formData,
         suspects: formData.suspects.split(',').map(s => s.trim()).filter(s => s !== '')
-      });
+      };
+
+      await axios.post('http://localhost:4000/api/cases', payload);
       showToast('Case successfully saved to Forensic System!', 'success');
-      setFormData({ 
+      setFormData({
         title: '', date: '', location: '', category: 'Theft/Robbery', description: '',
         firNumber: '', suspects: '', investigatingOfficer: ''
       });
     } catch (err) {
       console.error(err);
-      const msg = 'Failed to connect to database system.';
+      const msg = err.response?.data?.error || 'Failed to connect to database system.';
       setError(msg);
       showToast(msg, 'error');
     }
@@ -85,20 +98,20 @@ export default function RegisterCase() {
           </div>
 
           <div className="responsive-grid-2">
-             <div>
-                <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#ffffff', opacity: 0.6, marginBottom: 10, fontWeight: 700 }}>CRIME CATEGORY</label>
-                <select name="category" value={formData.category} onChange={handleChange} style={{ width: '100%', background: '#04040a', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '16px 20px', borderRadius: 6, outline: 'none', fontSize: 17, fontWeight: 500 }}>
-                  <option>Theft/Robbery</option>
-                  <option>Homicide</option>
-                  <option>Cybercrime</option>
-                  <option>Assault</option>
-                  <option>Fraud</option>
-                  <option>Other</option>
-                </select>
-             </div>
-             <div>
+            <div>
+              <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#ffffff', opacity: 0.6, marginBottom: 10, fontWeight: 700 }}>CRIME CATEGORY</label>
+              <select name="category" value={formData.category} onChange={handleChange} style={{ width: '100%', background: '#04040a', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '16px 20px', borderRadius: 6, outline: 'none', fontSize: 17, fontWeight: 500 }}>
+                <option>Theft/Robbery</option>
+                <option>Homicide</option>
+                <option>Cybercrime</option>
+                <option>Assault</option>
+                <option>Fraud</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
                 <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#ffffff', opacity: 0.6, marginBottom: 10, fontWeight: 700 }}>DATE OF INCIDENT</label>
-                <input type="date" name="date" value={formData.date} onChange={handleChange} required style={{ width: '100%', background: '#04040a', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '16px 20px', borderRadius: 6, outline: 'none', fontSize: 17, fontWeight: 500 }} />
+                <input type="date" name="date" value={formData.date} onChange={handleChange} required max={new Date().toISOString().split('T')[0]} style={{ width: '100%', background: '#04040a', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '16px 20px', borderRadius: 6, outline: 'none', fontSize: 17, fontWeight: 500 }} />
              </div>
           </div>
 
@@ -113,9 +126,11 @@ export default function RegisterCase() {
             </div>
           </div>
 
-          <div>
-            <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#ffffff', opacity: 0.6, marginBottom: 10, fontWeight: 700 }}>SUSPECTS (Comma separated)</label>
-            <input type="text" name="suspects" value={formData.suspects} onChange={handleChange} placeholder="e.g. John Doe, Jane Smith" style={{ width: '100%', background: '#04040a', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '16px 20px', borderRadius: 6, outline: 'none', fontSize: 17, fontWeight: 500 }} />
+          <div className="responsive-grid-2">
+            <div>
+              <label style={{ display: 'block', fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#ffffff', opacity: 0.6, marginBottom: 10, fontWeight: 700 }}>SUSPECTS (Comma separated)</label>
+              <input type="text" name="suspects" value={formData.suspects} onChange={handleChange} placeholder="e.g. John Doe, Jane Smith" style={{ width: '100%', background: '#04040a', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', padding: '16px 20px', borderRadius: 6, outline: 'none', fontSize: 17, fontWeight: 500 }} />
+            </div>
           </div>
 
           <div>
@@ -124,9 +139,9 @@ export default function RegisterCase() {
           </div>
 
           <div style={{ marginTop: 10, display: 'flex', justifyContent: 'flex-end', paddingTop: 32, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-             <button type="submit" style={{ padding: '18px 48px', background: '#dc2626', border: 'none', color: '#fff', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, fontFamily: "'Share Tech Mono', monospace", fontSize: 16, textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.06em', boxShadow: '0 0 20px rgba(220,38,38,0.2)' }}>
-                <Check size={20} /> File Official Report
-             </button>
+            <button type="submit" style={{ padding: '18px 48px', background: '#dc2626', border: 'none', color: '#fff', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14, fontFamily: "'Share Tech Mono', monospace", fontSize: 16, textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.06em', boxShadow: '0 0 20px rgba(220,38,38,0.2)' }}>
+              <Check size={20} /> File Official Report
+            </button>
           </div>
         </form>
       </div>

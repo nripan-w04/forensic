@@ -120,11 +120,11 @@ export default function AdminCaseMonitor() {
         {viewingCase && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(4,4,10,0.95)', backdropFilter: 'blur(10px)', zIndex: 100000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
+            style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 280, background: 'rgba(4,4,10,0.95)', backdropFilter: 'blur(10px)', zIndex: 100000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-              style={{ width: '100%', maxWidth: 1000, background: '#0a0a12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, padding: 32, maxHeight: '90vh', overflowY: 'auto' }}
+              style={{ width: '95%', maxWidth: 1000, background: '#0a0a12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: 40, maxHeight: '85vh', overflowY: 'auto' }}
             >
                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
                   <div>

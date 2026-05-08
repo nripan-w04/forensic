@@ -18,9 +18,9 @@ export default function StatCard({ stat, index }) {
       <div style={{ position: 'absolute', top: 0, left: 0, width: 3, height: '100%', background: stat.color, borderRadius: '4px 0 0 4px' }} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
-          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: '#ffffff', letterSpacing: '0.15em', marginBottom: 10 }}>{stat.label.toUpperCase()}</div>
-          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 44, fontWeight: 900, color: '#ffffff', lineHeight: 1 }}>{stat.value}</div>
-          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: stat.color, marginTop: 8, letterSpacing: '0.1em' }}>{stat.delta}</div>
+          <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, color: '#ffffff', letterSpacing: '0.15em', marginBottom: 10, fontWeight: 400 }}>{stat.label.toUpperCase()}</div>
+          <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 44, fontWeight: 300, color: '#ffffff', lineHeight: 1 }}>{stat.value}</div>
+          <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: stat.color, marginTop: 8, letterSpacing: '0.05em' }}>{stat.delta}</div>
         </div>
         <div style={{ width: 36, height: 36, borderRadius: 6, background: `${stat.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icon size={16} color={stat.color} />
