@@ -11,29 +11,7 @@ export default function RegisterEvidence() {
     barcode: '', qrCode: ''
   });
   const [error, setError] = useState('');
-  const [aiScanning, setAiScanning] = useState(false);
-  const [aiResults, setAiResults] = useState({ strength: '', priority: '', evidence: '' });
-  const [analysisType, setAnalysisType] = useState('evidence');
 
-  const runAIAnalysis = async () => {
-    if (!formData.description) {
-      showToast('Description is required for neural analysis.', 'warning');
-      return;
-    }
-    setAiScanning(true);
-    try {
-      const res = await axios.post('http://localhost:4000/api/analyze', {
-        text: formData.description,
-        type: analysisType
-      });
-      setAiResults(prev => ({ ...prev, [analysisType]: res.data.prediction }));
-    } catch (err) {
-      console.error(err);
-      showToast("Neural Link Failure: Could not reach diagnostic server.", "error");
-    } finally {
-      setAiScanning(false);
-    }
-  };
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -83,10 +61,7 @@ export default function RegisterEvidence() {
       }
 
       const payload = {
-        ...formData,
-        aiStrength: aiResults.strength,
-        aiPriority: aiResults.priority,
-        aiRecommendations: aiResults.evidence
+        ...formData
       };
  
       await axios.post('http://localhost:4000/api/evidence', payload);
@@ -95,7 +70,6 @@ export default function RegisterEvidence() {
         caseId: '', type: 'Weapon', description: '', collectedBy: '', collectedDate: '',
         barcode: '', qrCode: ''
       });
-      setAiResults({ strength: '', priority: '', evidence: '' });
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.error || 'Failed to connect to database system.';
@@ -186,50 +160,7 @@ export default function RegisterEvidence() {
                 <textarea name="description" value={formData.description} onChange={handleChange} required placeholder="Detail the visual traits, condition, and packaging method..." style={{ width: '100%', background: '#0a0a12', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '16px', borderRadius: 4, outline: 'none', minHeight: 120, resize: 'vertical', fontSize: 14, lineHeight: 1.6 }} />
               </div>
 
-              <div style={{ padding: 28, background: 'rgba(168,85,247,0.03)', border: '1px solid rgba(168,85,247,0.15)', borderRadius: 4 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-                    <div>
-                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#d8b4fe', marginBottom: 4 }}>// NEURAL DIAGNOSTIC ENGINE</div>
-                      <div style={{ fontSize: 13, color: '#a1a1aa' }}>Run AI heuristics on item description</div>
-                    </div>
-                    <div style={{ display: 'flex', gap: 8, background: 'rgba(0,0,0,0.3)', padding: 4, borderRadius: 4 }}>
-                      {['strength', 'priority', 'evidence'].map(type => (
-                        <button 
-                          key={type}
-                          type="button"
-                          onClick={() => setAnalysisType(type)}
-                          style={{ padding: '8px 16px', background: analysisType === type ? 'rgba(168,85,247,0.2)' : 'transparent', border: 'none', borderRadius: 3, color: analysisType === type ? '#d8b4fe' : '#71717a', cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 10, textTransform: 'uppercase', fontWeight: 600, transition: 'all 0.2s' }}
-                        >
-                          {type}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
 
-                  <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
-                    <button 
-                      type="button" 
-                      onClick={runAIAnalysis}
-                      disabled={aiScanning}
-                      style={{ flexShrink: 0, padding: '14px 28px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 4, color: '#d8b4fe', cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 12, display: 'flex', alignItems: 'center', gap: 12, fontWeight: 700 }}
-                    >
-                      {aiScanning ? 'SCANNING...' : 'INITIATE DIAGNOSTIC'}
-                    </button>
-
-                    <div style={{ flex: 1 }}>
-                      {aiResults[analysisType] ? (
-                        <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} style={{ padding: 18, background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 4, color: '#d8b4fe', fontSize: 14, fontFamily: "'Share Tech Mono', monospace", lineHeight: 1.6 }}>
-                          <div style={{ fontSize: 10, opacity: 0.5, marginBottom: 10, letterSpacing: '0.1em' }}>[HEURISTIC_RESULT_{analysisType.toUpperCase()}]</div>
-                          {aiResults[analysisType]}
-                        </motion.div>
-                      ) : (
-                        <div style={{ height: 60, display: 'flex', alignItems: 'center', color: '#52525b', fontSize: 11, fontFamily: "'Share Tech Mono', monospace", border: '1px dashed rgba(255,255,255,0.05)', borderRadius: 4, padding: '0 20px' }}>
-                          AWAITING DIAGNOSTIC INPUT...
-                        </div>
-                      )}
-                    </div>
-                  </div>
-              </div>
             </div>
           </div>
 

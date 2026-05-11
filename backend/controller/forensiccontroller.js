@@ -391,12 +391,15 @@ const updateInvestigation = async (req, res) => {
 const fileLegalDocs = async (req, res) => {
     try {
         const { id } = req.params;
-        const { chargeSheet, legalNotes } = req.body;
+        const { chargeSheet, legalNotes, aiStrength, aiPriority, aiRecommendations } = req.body;
         const updatedCase = await Case.findByIdAndUpdate(
             id,
             {
                 chargeSheet,
                 legalNotes,
+                aiStrength,
+                aiPriority,
+                aiRecommendations,
                 status: "FILED_IN_COURT"
             },
             { new: true }

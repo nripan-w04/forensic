@@ -24,6 +24,9 @@ const caseSchema = new mongoose.Schema({
     courtAuthority: { type: String },
     closedDate: { type: Date },
     caseImage: { type: String },
+    aiStrength: { type: String },
+    aiPriority: { type: String },
+    aiRecommendations: { type: String },
     createdAt: { type: Date, default: Date.now }
 });
 

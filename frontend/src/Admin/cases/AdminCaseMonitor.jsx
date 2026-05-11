@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Search, X } from 'lucide-react';
+import { FileText, Search, X, ShieldAlert, Zap, Cpu } from 'lucide-react';
 import axios from 'axios';
 
 export default function AdminCaseMonitor() {
@@ -9,6 +9,7 @@ export default function AdminCaseMonitor() {
   const [search, setSearch] = useState('');
   const [viewingCase, setViewingCase] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [viewingAnalysis, setViewingAnalysis] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -181,6 +182,22 @@ export default function AdminCaseMonitor() {
                          </div>
                       </div>
                     </div>
+
+                    <div>
+                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#71717a', marginBottom: 12, letterSpacing: '0.1em' }}>{'//'} 3. NEURAL ANALYSIS (POLICE)</div>
+                      <div style={{ padding: 20, background: 'rgba(168,85,247,0.03)', border: '1px solid rgba(168,85,247,0.15)', borderRadius: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                         <div>
+                            <div style={{ fontSize: 13, color: '#d8b4fe', fontWeight: 700 }}>AI FORENSIC DIAGNOSTICS</div>
+                            <div style={{ fontSize: 10, color: '#71717a', marginTop: 4 }}>Neural heuristics transmitted by filing officer</div>
+                         </div>
+                         <button 
+                           onClick={() => setViewingAnalysis(viewingCase)}
+                           style={{ background: '#a855f7', color: '#000', border: 'none', padding: '8px 20px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 11, fontWeight: 700, cursor: 'pointer' }}
+                         >
+                           VIEW ANALYSIS
+                         </button>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Right Column: Evidence */}
@@ -204,6 +221,45 @@ export default function AdminCaseMonitor() {
                     </div>
                   </div>
                </div>
+            </motion.div>
+          </motion.div>
+        )}
+        {viewingAnalysis && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.95)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200000 }}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} style={{ width: '100%', maxWidth: 800, background: '#0a0a12', border: '1px solid rgba(168,85,247,0.4)', borderRadius: 8, padding: 40, maxHeight: '85vh', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 20, marginBottom: 32 }}>
+                <div>
+                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#a855f7', fontWeight: 700, letterSpacing: '0.2em' }}>// NEURAL AUDIT REPORT</div>
+                  <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 28, fontWeight: 700, color: '#f4f4f5', textTransform: 'uppercase', marginTop: 4 }}>DOCKET: {viewingAnalysis.caseId}</h2>
+                </div>
+                <button onClick={() => setViewingAnalysis(null)} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#71717a', cursor: 'pointer', padding: '8px 16px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 12 }}>CLOSE</button>
+              </div>
+
+              <div style={{ display: 'grid', gap: 24 }}>
+                 <div style={{ padding: 32, background: 'rgba(168,85,247,0.03)', border: '1px solid rgba(168,85,247,0.1)', borderRadius: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                       <ShieldAlert color="#d8b4fe" size={20} />
+                       <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#d8b4fe', fontWeight: 700, letterSpacing: '0.1em' }}>STRENGTH ANALYSIS</span>
+                    </div>
+                    <div style={{ fontSize: 16, color: '#f4f4f5', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{viewingAnalysis.aiStrength || 'Analysis data not available for this case parameter.'}</div>
+                 </div>
+
+                 <div style={{ padding: 32, background: 'rgba(59,130,246,0.03)', border: '1px solid rgba(59,130,246,0.1)', borderRadius: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                       <Zap color="#60a5fa" size={20} />
+                       <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#60a5fa', fontWeight: 700, letterSpacing: '0.1em' }}>PRIORITY ASSESSMENT</span>
+                    </div>
+                    <div style={{ fontSize: 16, color: '#f4f4f5', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{viewingAnalysis.aiPriority || 'No priority heuristics transmitted.'}</div>
+                 </div>
+
+                 <div style={{ padding: 32, background: 'rgba(52,211,153,0.03)', border: '1px solid rgba(52,211,153,0.1)', borderRadius: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                       <Cpu color="#34d399" size={20} />
+                       <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#34d399', fontWeight: 700, letterSpacing: '0.1em' }}>FORENSIC RECOMMENDATIONS</span>
+                    </div>
+                    <div style={{ fontSize: 16, color: '#f4f4f5', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{viewingAnalysis.aiRecommendations || 'No automated forensic recommendations recorded.'}</div>
+                 </div>
+              </div>
             </motion.div>
           </motion.div>
         )}

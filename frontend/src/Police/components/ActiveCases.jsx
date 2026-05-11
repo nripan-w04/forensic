@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Eye, Edit, Trash2, X, Check, Activity, Package, FileText, Gavel, Camera } from 'lucide-react';
+import { Search, MapPin, Eye, Edit, Trash2, X, Check, Activity, Package, FileText, Gavel, Camera, ShieldAlert, Zap, Cpu } from 'lucide-react';
 import axios from 'axios';
 import { useUI } from '../../common/UIContext';
 import { useSocket } from '../../common/SocketContext';
@@ -17,6 +17,31 @@ export default function ActiveCases() {
   const [filingLegal, setFilingLegal] = useState(null);
   const [legalData, setLegalData] = useState({ chargeSheet: '', legalNotes: '' });
   const [viewingImage, setViewingImage] = useState(null);
+  const [aiScanning, setAiScanning] = useState(false);
+  const [aiResults, setAiResults] = useState({ strength: '', priority: '', evidence: '' });
+  const [analysisType, setAnalysisType] = useState('strength');
+
+  const runAIAnalysis = async () => {
+    if (!viewingDetails?.description) {
+      showToast('Case description is required for neural analysis.', 'warning');
+      return;
+    }
+    setAiScanning(true);
+    try {
+      const evidenceText = viewingDetails.evidence?.map(e => `[${e.type}]: ${e.description}`).join('; ') || 'No evidence collected.';
+      const res = await axios.post('http://localhost:4000/api/analyze', {
+        text: `INCIDENT LOG: ${viewingDetails.description}\nINVESTIGATION NOTES: ${viewingDetails.investigationNotes}\nEVIDENCE DATA: ${evidenceText}`,
+        type: analysisType
+      });
+      setAiResults(prev => ({ ...prev, [analysisType]: res.data.prediction }));
+    } catch (err) {
+      console.error(err);
+      showToast("Neural Link Failure: Could not reach diagnostic server.", "error");
+    } finally {
+      setAiScanning(false);
+    }
+  };
+
 
   const fetchCases = async () => {
     try {
@@ -126,11 +151,25 @@ export default function ActiveCases() {
   const handleLegalFiling = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:4000/api/cases/${filingLegal._id}/legal`, legalData);
-      setCases(cases.map(c => c._id === filingLegal._id ? { ...c, status: 'FILED_IN_COURT' } : c));
+      const payload = { 
+        ...legalData, 
+        aiStrength: aiResults.strength,
+        aiPriority: aiResults.priority,
+        aiRecommendations: aiResults.evidence
+      };
+      
+      await axios.put(`http://localhost:4000/api/cases/${filingLegal._id}/legal`, payload);
+      setCases(cases.map(c => c._id === filingLegal._id ? { 
+        ...c, 
+        status: 'FILED_IN_COURT',
+        aiStrength: aiResults.strength,
+        aiPriority: aiResults.priority,
+        aiRecommendations: aiResults.evidence
+      } : c));
       showToast('Case successfully filed in Court!', 'success');
       setFilingLegal(null);
       setLegalData({ chargeSheet: '', legalNotes: '' });
+      setAiResults({ strength: '', priority: '', evidence: '' });
       if (viewingDetails) setViewingDetails(null);
     } catch (err) {
       console.error(err);
@@ -323,6 +362,8 @@ export default function ActiveCases() {
                         <p style={{ fontSize: 18, color: '#d4d4d8', lineHeight: 1.8, fontWeight: 500 }}>{viewingDetails.description}</p>
                       </div>
 
+
+
                       {viewingDetails.investigationNotes && (
                         <div style={{ padding: 16, background: 'rgba(59,130,246,0.02)', border: '1px solid rgba(59,130,246,0.1)', borderRadius: 4 }}>
                           <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#3b82f6', marginBottom: 8 }}>OFFICER NOTES</div>
@@ -355,6 +396,47 @@ export default function ActiveCases() {
 
                       {viewingDetails.status === 'UNDER_INVESTIGATION' && (
                         <div style={{ marginTop: 20, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 20 }}>
+                          
+                          {/* NEURAL DIAGNOSTIC ENGINE BLOCK */}
+                          <div style={{ padding: 24, background: 'rgba(168,85,247,0.03)', border: '1px solid rgba(168,85,247,0.15)', borderRadius: 4, marginBottom: 20 }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                                <div>
+                                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#d8b4fe', marginBottom: 4 }}>// NEURAL CASE DIAGNOSTICS</div>
+                                  <div style={{ fontSize: 13, color: '#a1a1aa' }}>Run AI heuristics on case details</div>
+                                </div>
+                                <div style={{ display: 'flex', gap: 8, background: 'rgba(0,0,0,0.3)', padding: 4, borderRadius: 4 }}>
+                                  {['strength', 'priority', 'evidence'].map(type => (
+                                    <button 
+                                      key={type}
+                                      type="button"
+                                      onClick={() => setAnalysisType(type)}
+                                      style={{ padding: '6px 12px', background: analysisType === type ? 'rgba(168,85,247,0.2)' : 'transparent', border: 'none', borderRadius: 3, color: analysisType === type ? '#d8b4fe' : '#71717a', cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 9, textTransform: 'uppercase', fontWeight: 600, transition: 'all 0.2s' }}
+                                    >
+                                      {type}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                                <button 
+                                  type="button" 
+                                  onClick={runAIAnalysis}
+                                  disabled={aiScanning}
+                                  style={{ width: '100%', padding: '12px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 4, color: '#d8b4fe', cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, fontWeight: 700 }}
+                                >
+                                  {aiScanning ? 'SCANNING CASE...' : 'INITIATE CASE DIAGNOSTIC'}
+                                </button>
+
+                                {aiResults[analysisType] && (
+                                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ padding: 16, background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 4, color: '#d8b4fe', fontSize: 14, fontFamily: "'Share Tech Mono', monospace", lineHeight: 1.6 }}>
+                                    <div style={{ fontSize: 10, opacity: 0.5, marginBottom: 8, letterSpacing: '0.1em' }}>[HEURISTIC_RESULT_{analysisType.toUpperCase()}]</div>
+                                    {aiResults[analysisType]}
+                                  </motion.div>
+                                )}
+                              </div>
+                          </div>
+
                           <button
                             onClick={() => setFilingLegal(viewingDetails)}
                             style={{ width: '100%', padding: '12px', background: '#3b82f6', border: 'none', color: '#fff', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}
@@ -503,6 +585,17 @@ export default function ActiveCases() {
                       style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '14px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 100, fontSize: 15, lineHeight: 1.6 }}
                     />
                   </div>
+
+                  {/* AI INSIGHTS PREVIEW */}
+                  <div style={{ padding: 16, background: 'rgba(168,85,247,0.05)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 4 }}>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 10, color: '#d8b4fe', marginBottom: 12, fontWeight: 700 }}>// NEURAL ANALYSIS PREVIEW (TO BE TRANSMITTED)</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+                      <div style={{ fontSize: 11, color: aiResults.strength ? '#fff' : '#71717a' }}>• STRENGTH: {aiResults.strength ? 'READY' : 'EMPTY'}</div>
+                      <div style={{ fontSize: 11, color: aiResults.priority ? '#fff' : '#71717a' }}>• PRIORITY: {aiResults.priority ? 'READY' : 'EMPTY'}</div>
+                      <div style={{ fontSize: 11, color: aiResults.evidence ? '#fff' : '#71717a' }}>• RECOMMENDS: {aiResults.evidence ? 'READY' : 'EMPTY'}</div>
+                    </div>
+                  </div>
+
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
                     <button type="submit" style={{ padding: '12px 28px', background: '#3b82f6', border: 'none', color: '#fff', borderRadius: 3, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>
                       OFFICIALLY FILE IN COURT

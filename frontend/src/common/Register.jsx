@@ -173,7 +173,7 @@ export default function Register() {
         }
         .reg-eyebrow {
           font-family: 'Share Tech Mono', monospace;
-          font-size: 11px;
+          font-size: 14px;
           color: #dc2626;
           letter-spacing: 0.25em;
           text-transform: uppercase;
@@ -202,7 +202,7 @@ export default function Register() {
         /* Role selector */
         .role-label {
           font-family: 'Share Tech Mono', monospace;
-          font-size: 11px;
+          font-size: 14px;
           color: #ffffff;
           letter-spacing: 0.2em;
           text-transform: uppercase;
@@ -261,7 +261,7 @@ export default function Register() {
         .role-btn:hover .role-icon { color: #71717a; }
         .role-name {
           font-family: 'Share Tech Mono', monospace;
-          font-size: 10px;
+          font-size: 11px;
           letter-spacing: 0.08em;
           color: #ffffff;
           text-transform: uppercase;
@@ -290,7 +290,7 @@ export default function Register() {
         .field-wrap { display: flex; flex-direction: column; gap: 5px; }
         .field-label {
           font-family: 'Share Tech Mono', monospace;
-          font-size: 11px;
+          font-size: 14px;
           color: #ffffff;
           letter-spacing: 0.15em;
           text-transform: uppercase;
@@ -309,7 +309,7 @@ export default function Register() {
           border-radius: 3px;
           padding: 0 12px;
           font-family: 'Barlow', sans-serif;
-          font-size: 13px;
+          font-size: 14px;
           color: #e4e4e7;
           outline: none;
           transition: all 0.2s;
@@ -382,7 +382,7 @@ export default function Register() {
         .reg-footer {
           text-align: center;
           margin-top: 18px;
-          font-size: 13px;
+          font-size: 14px;
           color: #ffffff;
         }
         .reg-footer a {

@@ -187,17 +187,6 @@ export default function EvidenceVault() {
                     <section>
                       <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#71717a', marginBottom: 12, letterSpacing: '0.1em' }}>{'//'} 3. FORENSIC INTELLIGENCE</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                        {/* AI Section */}
-                        <div style={{ padding: 20, background: 'rgba(34,211,238,0.03)', border: '1px solid rgba(34,211,238,0.1)', borderRadius: 4 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                            <Activity size={14} color="#22d3ee" />
-                            <span style={{ fontSize: 11, color: '#22d3ee', fontWeight: 700, letterSpacing: '0.05em' }}>AI DIAGNOSTIC REPORT</span>
-                          </div>
-                          <p style={{ color: '#bae6fd', fontSize: 13, lineHeight: 1.5, margin: 0, fontStyle: 'italic' }}>
-                            {viewingEvidence.aiAnalysis || "AI Diagnostics not yet performed for this item."}
-                          </p>
-                        </div>
-                        
                         {/* Analyst Section */}
                         <div style={{ padding: 20, background: 'rgba(168,85,247,0.03)', border: '1px solid rgba(168,85,247,0.1)', borderRadius: 4 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
@@ -224,38 +213,9 @@ export default function EvidenceVault() {
 
                   {/* Right Column: Visuals & Chain of Custody */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-                    {/* Visual Evidence Slider */}
-                    <section>
-                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#71717a', marginBottom: 12, letterSpacing: '0.1em' }}>{'//'} 4. VISUAL CAPTURES</div>
-                      {viewingEvidence.images && viewingEvidence.images.length > 0 ? (
-                        <div style={{ position: 'relative', background: '#000', borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-                          <img 
-                            src={`http://localhost:4000/${viewingEvidence.images[activeImageIndex]}`} 
-                            alt="Evidence" 
-                            style={{ width: '100%', height: 320, objectFit: 'contain', background: '#050505' }} 
-                          />
-                          {viewingEvidence.images.length > 1 && (
-                            <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, background: 'rgba(0,0,0,0.6)', padding: '6px 12px', borderRadius: 20, backdropFilter: 'blur(4px)' }}>
-                              {viewingEvidence.images.map((_, i) => (
-                                <button 
-                                  key={i} 
-                                  onClick={() => setActiveImageIndex(i)}
-                                  style={{ width: 6, height: 6, borderRadius: '50%', background: i === activeImageIndex ? '#3b82f6' : 'rgba(255,255,255,0.2)', padding: 0 }}
-                                />
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div style={{ height: 320, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.01)', border: '1px dashed rgba(255,255,255,0.05)', borderRadius: 4, color: '#71717a', fontSize: 12, fontFamily: "'Share Tech Mono', monospace" }}>
-                          NO VISUAL EVIDENCE LOGGED
-                        </div>
-                      )}
-                    </section>
-
                     {/* Chain of Custody */}
                     <section>
-                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#71717a', marginBottom: 12, letterSpacing: '0.1em' }}>{'//'} 5. CHAIN OF CUSTODY LOG</div>
+                      <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#71717a', marginBottom: 12, letterSpacing: '0.1em' }}>{'//'} 4. CHAIN OF CUSTODY LOG</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         {viewingEvidence.chainOfCustody && viewingEvidence.chainOfCustody.length > 0 ? (
                           viewingEvidence.chainOfCustody.map((log, i) => (

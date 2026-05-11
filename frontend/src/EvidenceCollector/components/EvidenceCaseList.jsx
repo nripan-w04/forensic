@@ -17,29 +17,7 @@ export default function EvidenceCaseList() {
     caseId: '', type: 'Weapon', description: '', collectedBy: '', collectedDate: '',
     barcode: '', qrCode: ''
   });
-  const [aiScanning, setAiScanning] = useState(false);
-  const [aiResults, setAiResults] = useState({ strength: '', priority: '', evidence: '' });
-  const [analysisType, setAnalysisType] = useState('evidence');
 
-  const runAIAnalysis = async () => {
-    if (!formData.description) {
-      showToast('Please provide a description for Neural Analysis.', 'warning');
-      return;
-    }
-    setAiScanning(true);
-    try {
-      const res = await axios.post('http://localhost:4000/api/analyze', {
-        text: formData.description,
-        type: analysisType
-      });
-      setAiResults(prev => ({ ...prev, [analysisType]: res.data.prediction }));
-    } catch (err) {
-      console.error(err);
-      showToast("Neural Link Failure: Could not reach diagnostic server.", "error");
-    } finally {
-      setAiScanning(false);
-    }
-  };
 
   const fetchCases = async () => {
     try {
@@ -92,10 +70,7 @@ export default function EvidenceCaseList() {
     }
     try {
       const payload = {
-        ...formData,
-        aiStrength: aiResults.strength,
-        aiPriority: aiResults.priority,
-        aiRecommendations: aiResults.evidence
+        ...formData
       };
 
       await axios.post('http://localhost:4000/api/evidence', payload);
@@ -105,7 +80,6 @@ export default function EvidenceCaseList() {
         caseId: '', type: 'Weapon', description: '', collectedBy: '', collectedDate: '',
         barcode: '', qrCode: ''
       });
-      setAiResults({ strength: '', priority: '', evidence: '' });
     } catch (err) {
       console.error(err);
       showToast('Failed to log evidence', 'error');
@@ -240,53 +214,7 @@ export default function EvidenceCaseList() {
                     <textarea name="description" value={formData.description} onChange={handleChange} required placeholder="Detail the item..." style={{ width: '100%', background: '#111116', border: '1px solid rgba(255,255,255,0.1)', padding: '12px', color: '#fff', borderRadius: 3, outline: 'none', minHeight: 120, fontSize: 16 }} />
                   </div>
 
-                  <div style={{ padding: 16, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                        <div>
-                          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#ffffff', opacity: 0.5, marginBottom: 2 }}>// NEURAL DIAGNOSTIC ENGINE</div>
-                          <div style={{ fontSize: 13, color: '#ffffff' }}>Select analysis heuristic</div>
-                        </div>
-                        <button 
-                          type="button" 
-                          onClick={runAIAnalysis}
-                          disabled={aiScanning}
-                          style={{ padding: '8px 16px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', borderRadius: 4, color: '#d8b4fe', cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11 }}
-                        >
-                          {aiScanning ? 'SCANNING...' : 'SCAN'}
-                        </button>
-                    </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 16 }}>
-                      {['strength', 'priority', 'evidence'].map(t => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setAnalysisType(t)}
-                          style={{
-                            padding: '6px',
-                            background: analysisType === t ? 'rgba(168,85,247,0.2)' : 'rgba(255,255,255,0.02)',
-                            border: `1px solid ${analysisType === t ? 'rgba(168,85,247,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                            borderRadius: 4,
-                            color: analysisType === t ? '#d8b4fe' : '#71717a',
-                            fontFamily: "'Share Tech Mono', monospace",
-                            fontSize: 11,
-                            textTransform: 'uppercase',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                          }}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
-                    
-                    {aiResults[analysisType] && (
-                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: 14, background: 'rgba(168,85,247,0.05)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: 4, color: '#d8b4fe', fontSize: 14, fontFamily: "'Share Tech Mono', monospace", lineHeight: 1.6 }}>
-                        <div style={{ fontSize: 10, opacity: 0.5, marginBottom: 8 }}>[HEURISTIC RESULT]: {analysisType.toUpperCase()}</div>
-                        {aiResults[analysisType]}
-                      </motion.div>
-                    )}
-                  </div>
 
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
                     <button type="submit" style={{ padding: '10px 24px', background: '#3b82f6', border: 'none', color: '#fff', borderRadius: 3, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>

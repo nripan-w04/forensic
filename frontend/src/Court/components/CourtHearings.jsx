@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Eye, X, Check, Package } from 'lucide-react';
+import { Search, Eye, X, Check, Package, ShieldAlert, Zap, Cpu } from 'lucide-react';
 import axios from 'axios';
 import { useUI } from '../../common/UIContext';
 
@@ -15,7 +15,7 @@ export default function CourtHearings() {
   const [viewingCase, setViewingCase] = useState(null);
   const [evidenceList, setEvidenceList] = useState([]);
   const [loadingEvidence, setLoadingEvidence] = useState(false);
-  const [viewingAI, setViewingAI] = useState(null);
+  const [viewingAnalysis, setViewingAnalysis] = useState(null);
 
   const fetchCases = async () => {
     try {
@@ -46,9 +46,27 @@ export default function CourtHearings() {
     }
   };
 
-  const handleOpenDetails = (c) => {
-    setViewingCase(c);
-    fetchEvidence(c.caseId);
+  const handleOpenDetails = async (c) => {
+    setLoadingEvidence(true); // Reuse loading state or add a new one
+    try {
+      // Fetch the absolute latest case data to ensure AI insights are present
+      const caseRes = await axios.get(`http://localhost:4000/api/cases`);
+      const freshCase = caseRes.data.find(item => item._id === c._id);
+      
+      if (freshCase) {
+        setViewingCase(freshCase);
+        // Also fetch evidence
+        const evRes = await axios.get(`http://localhost:4000/api/evidence?caseId=${freshCase.caseId}`);
+        setEvidenceList(evRes.data);
+      } else {
+        showToast('Error: Case record not found', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error synchronizing case data', 'error');
+    } finally {
+      setLoadingEvidence(false);
+    }
   };
 
 
@@ -219,6 +237,20 @@ export default function CourtHearings() {
                    </div>
                 </div>
 
+                {/* SECTION: POLICE NEURAL CASE ANALYSIS (MODAL TRIGGER) */}
+                <div style={{ marginBottom: 40, border: '1px solid rgba(168,85,247,0.3)', padding: 24, borderRadius: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(168,85,247,0.03)' }}>
+                   <div>
+                     <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#a855f7', letterSpacing: '0.2em', fontWeight: 700 }}>// NEURAL ANALYSIS TRANSMITTED BY POLICE</div>
+                     <div style={{ fontSize: 12, color: '#71717a', marginTop: 4 }}>Neural diagnostics captured at filing stage</div>
+                   </div>
+                   <button 
+                     onClick={() => setViewingAnalysis(viewingCase)}
+                     style={{ padding: '12px 24px', background: '#a855f7', border: 'none', color: '#000', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 13, fontWeight: 700, letterSpacing: '0.1em' }}
+                   >
+                     VIEW NEURAL ANALYSIS
+                   </button>
+                </div>
+
                 {/* SECTION: LEGAL DOCUMENTS */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40 }}>
                    <div>
@@ -234,6 +266,7 @@ export default function CourtHearings() {
                       </div>
                    </div>
                 </div>
+
 
                 {/* SECTION: SUSPECTS & JUDGMENT */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 40 }}>
@@ -309,17 +342,7 @@ export default function CourtHearings() {
                                  <div style={{ fontSize: 14, color: '#fff', lineHeight: 1.6 }}>{ev.findingsSummary || 'Analytical reports pending laboratory results.'}</div>
                                  <div style={{ fontSize: 12, color: '#3b82f6', marginTop: 12, fontFamily: "'Share Tech Mono', monospace" }}>ANALYST: {ev.analystName || 'N/A'}</div>
                               </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 12 }}>
-                                 <button 
-                                    onClick={() => setViewingAI(ev)}
-                                    style={{ width: '100%', padding: '16px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.3)', color: '#d8b4fe', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, transition: 'all 0.2s' }}
-                                 >
-                                    <Package size={18} /> VIEW NEURAL AI INSIGHTS
-                                 </button>
-                                 <div style={{ fontSize: 11, color: '#71717a', textAlign: 'center', fontFamily: "'Share Tech Mono', monospace" }}>
-                                    SECURE DIAGNOSTIC ACCESS REQUIRED
-                                 </div>
-                              </div>
+
                            </div>
                         </div>
                       ))}
@@ -329,56 +352,7 @@ export default function CourtHearings() {
             </motion.div>
           )}
 
-          {viewingAI && (
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}
-            >
-              <motion.div
-                initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
-                style={{ width: '100%', maxWidth: 550, background: '#0a0a12', border: '1px solid rgba(168,85,247,0.4)', borderRadius: 4, padding: 32, maxHeight: '85vh', overflowY: 'auto' }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(168,85,247,0.2)', paddingBottom: 16, marginBottom: 24, marginTop: 17 }}>
-                  <div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#a855f7', fontWeight: 700 }}>NEURAL SENTRY DIAGNOSTICS</div>
-                    <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 24, fontWeight: 700, color: '#f4f4f5', textTransform: 'uppercase' }}>{viewingAI.evidenceId}</div>
-                  </div>
-                  <button onClick={() => setViewingAI(null)} style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}><X size={24} /></button>
-                </div>
 
-                <div style={{ display: 'grid', gap: 24 }}>
-                   <div style={{ padding: 20, background: 'rgba(168,85,247,0.05)', border: '1px solid rgba(168,85,247,0.1)', borderRadius: 4, maxHeight: 300, overflowY: 'auto' }}>
-                      <div style={{ fontSize: 12, color: '#d8b4fe', fontFamily: "'Share Tech Mono', monospace", marginBottom: 12, fontWeight: 700 }}>// AI RECOMMENDATIONS</div>
-                      <div style={{ fontSize: 15, color: '#fff', fontStyle: 'italic', lineHeight: 1.6 }}>
-                        "{viewingAI.aiRecommendations || 'No automated recommendations generated for this evidence profile.'}"
-                      </div>
-                   </div>
-
-                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                      <div style={{ padding: 16, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4 }}>
-                         <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 6 }}>PRIORITY LEVEL</div>
-                         <div style={{ fontSize: 16, color: '#a855f7', fontWeight: 700, textTransform: 'uppercase' }}>{viewingAI.aiPriority || 'NORMAL'}</div>
-                      </div>
-                      <div style={{ padding: 16, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4 }}>
-                         <div style={{ fontSize: 12, color: '#71717a', fontFamily: "'Share Tech Mono', monospace", marginBottom: 6 }}>ANALYSIS STRENGTH</div>
-                         <div style={{ fontSize: 16, color: '#10b981', fontWeight: 700 }}>{viewingAI.aiStrength || '0%'}</div>
-                      </div>
-                   </div>
-
-                   <div style={{ fontSize: 12, color: '#52525b', fontFamily: "'Share Tech Mono', monospace", lineHeight: 1.5 }}>
-                      NOTICE: This analysis is generated by the Neural Sentry AI engine and should be used as a supplementary diagnostic tool alongside official lab findings.
-                   </div>
-
-                   <button 
-                      onClick={() => setViewingAI(null)}
-                      style={{ width: '100%', padding: '14px', background: '#a855f7', border: 'none', color: '#000', borderRadius: 4, cursor: 'pointer', fontFamily: "'Share Tech Mono', monospace", fontSize: 13, fontWeight: 700 }}
-                   >
-                      ACKNOWLEDGE & CLOSE
-                   </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
 
           {selectedCase && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.85)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
@@ -420,6 +394,51 @@ export default function CourtHearings() {
                          AUTHORIZE CASE CLOSURE & VERDICT
                       </button>
                     </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+          {viewingAnalysis && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.95)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000 }}>
+              <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} style={{ width: '100%', maxWidth: 800, background: '#0a0a12', border: '1px solid rgba(168,85,247,0.4)', borderRadius: 8, padding: 40, maxHeight: '85vh', overflowY: 'auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 20, marginBottom: 32 }}>
+                  <div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#a855f7', fontWeight: 700, letterSpacing: '0.2em' }}>// NEURAL ANALYSIS REPORT</div>
+                    <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 28, fontWeight: 700, color: '#f4f4f5', textTransform: 'uppercase', marginTop: 4 }}>DOCKET: {viewingAnalysis.caseId}</h2>
+                  </div>
+                  <button onClick={() => setViewingAnalysis(null)} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#71717a', cursor: 'pointer', padding: '8px 16px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 12 }}>CLOSE</button>
+                </div>
+
+                <div style={{ display: 'grid', gap: 24 }}>
+                   <div style={{ padding: 32, background: 'rgba(168,85,247,0.03)', border: '1px solid rgba(168,85,247,0.1)', borderRadius: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                         <ShieldAlert color="#d8b4fe" size={20} />
+                         <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#d8b4fe', fontWeight: 700, letterSpacing: '0.1em' }}>NEURAL STRENGTH ANALYSIS</span>
+                      </div>
+                      <div style={{ fontSize: 16, color: '#f4f4f5', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{viewingAnalysis.aiStrength || 'Analysis data not available for this case parameter.'}</div>
+                   </div>
+
+                   <div style={{ padding: 32, background: 'rgba(59,130,246,0.03)', border: '1px solid rgba(59,130,246,0.1)', borderRadius: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                         <Zap color="#60a5fa" size={20} />
+                         <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#60a5fa', fontWeight: 700, letterSpacing: '0.1em' }}>PRIORITY ASSESSMENT</span>
+                      </div>
+                      <div style={{ fontSize: 16, color: '#f4f4f5', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{viewingAnalysis.aiPriority || 'No priority heuristics transmitted.'}</div>
+                   </div>
+
+                   <div style={{ padding: 32, background: 'rgba(52,211,153,0.03)', border: '1px solid rgba(52,211,153,0.1)', borderRadius: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                         <Cpu color="#34d399" size={20} />
+                         <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#34d399', fontWeight: 700, letterSpacing: '0.1em' }}>FORENSIC RECOMMENDATIONS</span>
+                      </div>
+                      <div style={{ fontSize: 16, color: '#f4f4f5', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{viewingAnalysis.aiRecommendations || 'No automated forensic recommendations recorded.'}</div>
+                   </div>
+                </div>
+
+                <div style={{ marginTop: 40, padding: 20, borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                   <div style={{ fontSize: 11, color: '#52525b', fontFamily: "'Share Tech Mono', monospace", letterSpacing: '0.05em' }}>
+                      THIS REPORT IS GENERATED BY THE NEURAL SENTRY AI ENGINE AND TRANSMITTED UNDER POLICE SEAL.
+                   </div>
                 </div>
               </motion.div>
             </motion.div>

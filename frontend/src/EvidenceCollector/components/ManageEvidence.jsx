@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Edit, Trash2, Package, X, Check, FileText, Eye, ShieldAlert, Zap, Cpu } from 'lucide-react';
+import { Search, Edit, Trash2, Package, X, Check, FileText, Eye } from 'lucide-react';
 import axios from 'axios';
 import { useUI } from '../../common/UIContext';
 
@@ -12,7 +12,6 @@ export default function ManageEvidence() {
   const [editingItem, setEditingItem] = useState(null);
   const [viewingHistory, setViewingHistory] = useState(null);
   const [viewingReport, setViewingReport] = useState(null);
-  const [viewingInsight, setViewingInsight] = useState(null);
 
 
   const fetchEvidence = async () => {
@@ -118,14 +117,13 @@ export default function ManageEvidence() {
               <th style={{ fontSize: 13 }}>SECURITY BARCODE</th>
               <th style={{ fontSize: 13 }}>COLLECTING OFFICER</th>
               <th style={{ fontSize: 13 }}>OPERATIONAL STATUS</th>
-              <th style={{ fontSize: 13 }}>NEURAL DIAGNOSTICS</th>
               <th style={{ fontSize: 13 }}>ANALYSIS REPORTS</th>
               <th style={{ textAlign: 'right', paddingRight: 22, fontSize: 13 }}>COMMANDS</th>
             </tr>
           </thead>
           <tbody>
             <AnimatePresence>
-              {loading && <tr><td colSpan="5" style={{ textAlign: 'center', padding: '40px', color: '#71717a', fontSize: 12 }}>UNLOCKING CUSTODY LOGS...</td></tr>}
+              {loading && <tr><td colSpan="6" style={{ textAlign: 'center', padding: '40px', color: '#71717a', fontSize: 12 }}>UNLOCKING CUSTODY LOGS...</td></tr>}
               {!loading && filtered.map((e, i) => (
                 <motion.tr key={e._id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
                   <td>
@@ -154,37 +152,7 @@ export default function ManageEvidence() {
                       {e.status}
                     </div>
                   </td>
-                  <td>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      {e.aiStrength && (
-                        <button 
-                          onClick={() => setViewingInsight({ title: 'STRENGTH ANALYSIS', content: e.aiStrength, color: '#d8b4fe', icon: <ShieldAlert size={14} /> })}
-                          style={{ background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.2)', color: '#d8b4fe', padding: '4px 8px', borderRadius: 4, fontSize: 9, fontFamily: "'Share Tech Mono', monospace", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, width: 'fit-content' }}
-                        >
-                          <ShieldAlert size={12} /> STR
-                        </button>
-                      )}
-                      {e.aiPriority && (
-                        <button 
-                          onClick={() => setViewingInsight({ title: 'PRIORITY ASSESSMENT', content: e.aiPriority, color: '#60a5fa', icon: <Zap size={14} /> })}
-                          style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', color: '#60a5fa', padding: '4px 8px', borderRadius: 4, fontSize: 9, fontFamily: "'Share Tech Mono', monospace", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, width: 'fit-content' }}
-                        >
-                          <Zap size={12} /> PRI
-                        </button>
-                      )}
-                      {e.aiRecommendations && (
-                        <button 
-                          onClick={() => setViewingInsight({ title: 'EVIDENCE RECOMMENDATIONS', content: e.aiRecommendations, color: '#34d399', icon: <Cpu size={14} /> })}
-                          style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)', color: '#34d399', padding: '4px 8px', borderRadius: 4, fontSize: 9, fontFamily: "'Share Tech Mono', monospace", cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, width: 'fit-content' }}
-                        >
-                          <Cpu size={12} /> REC
-                        </button>
-                      )}
-                      {!e.aiStrength && !e.aiPriority && !e.aiRecommendations && (
-                        <span style={{ fontSize: 10, color: '#52525b', fontFamily: "'Share Tech Mono', monospace" }}>NO DIAGNOSTICS</span>
-                      )}
-                    </div>
-                  </td>
+
                   <td>
                     <div className="custom-scroll" style={{ display: 'flex', gap: 6, overflowX: 'auto', maxWidth: 150, paddingBottom: 4 }}>
                       {e.labReports?.map((path, idx) => (
@@ -229,7 +197,7 @@ export default function ManageEvidence() {
             </AnimatePresence>
             {!loading && filtered.length === 0 && (
               <tr>
-                <td colSpan="5" style={{ textAlign: 'center', padding: '60px 20px', fontFamily: "'Share Tech Mono', monospace", color: '#52525b', fontSize: 11, letterSpacing: '0.1em' }}>NO EVIDENCE MATCHING QUERY</td>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '60px 20px', fontFamily: "'Share Tech Mono', monospace", color: '#52525b', fontSize: 11, letterSpacing: '0.1em' }}>NO EVIDENCE MATCHING QUERY</td>
               </tr>
             )}
           </tbody>
@@ -366,38 +334,7 @@ export default function ManageEvidence() {
           )}
         </AnimatePresence>
 
-        {/* Insight Detail Modal */}
-        <AnimatePresence>
-          {viewingInsight && (
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setViewingInsight(null)}
-              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(4,4,10,0.9)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10001 }}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                onClick={(e) => e.stopPropagation()}
-                style={{ width: '100%', maxWidth: 500, background: '#0a0a12', border: `1px solid ${viewingInsight.color}40`, borderRadius: 8, overflow: 'hidden' }}
-              >
-                <div style={{ padding: '20px 24px', background: `${viewingInsight.color}05`, borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ color: viewingInsight.color }}>{viewingInsight.icon}</div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: viewingInsight.color, fontWeight: 700, letterSpacing: '0.1em' }}>{viewingInsight.title}</div>
-                  </div>
-                  <button onClick={() => setViewingInsight(null)} style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer' }}><X size={20} /></button>
-                </div>
-                <div className="custom-scroll" style={{ padding: 32, maxHeight: '60vh', overflowY: 'auto' }}>
-                  <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 4, padding: 24, color: '#f4f4f5', fontSize: 16, fontFamily: "'Barlow Condensed', sans-serif", lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
-                    {viewingInsight.content}
-                  </div>
-                </div>
-                <div style={{ padding: '0 32px 32px 32px', display: 'flex', justifyContent: 'flex-end' }}>
-                  <button onClick={() => setViewingInsight(null)} style={{ background: viewingInsight.color, color: '#000', border: 'none', padding: '8px 24px', borderRadius: 4, fontFamily: "'Share Tech Mono', monospace", fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>ACKNOWLEDGE</button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
 
         {/* Report Viewer Modal */}
         <AnimatePresence>
