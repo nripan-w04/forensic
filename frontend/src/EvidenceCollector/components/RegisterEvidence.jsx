@@ -10,7 +10,6 @@ export default function RegisterEvidence() {
     caseId: '', type: 'Weapon', description: '', collectedBy: '', collectedDate: '',
     barcode: '', qrCode: ''
   });
-  const [images, setImages] = useState([]);
   const [error, setError] = useState('');
   const [aiScanning, setAiScanning] = useState(false);
   const [aiResults, setAiResults] = useState({ strength: '', priority: '', evidence: '' });
