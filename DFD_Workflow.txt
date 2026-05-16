@@ -1,0 +1,77 @@
+================================================================================
+          FORENSIC MANAGEMENT SYSTEM: DFD CREATION WORKFLOW (LVL 0 & 1)
+================================================================================
+
+This document outlines the accurate workflow for creating Data Flow Diagrams
+(DFD) specifically tailored for the Forensic Management System architecture.
+
+--------------------------------------------------------------------------------
+1. SYMBOLS & NOTATION REFERENCE (Gane-Sarson)
+--------------------------------------------------------------------------------
+[ Process ]     : Rounded Rectangle / Circle (Transformation of data)
+[ Entity ]      : Square / Rectangle (External source or destination)
+[ Data Store ]  : Open-ended Rectangle (Database or file)
+[ Data Flow ]   : Arrow (Movement of information)
+
+--------------------------------------------------------------------------------
+2. LEVEL-0 DFD WORKFLOW (The Context Diagram)
+--------------------------------------------------------------------------------
+Goal: Define the system boundary and external interfaces.
+
+Step 1: Identify the Main Process
+- Represent the entire "Forensic Management System" as a single central process
+  (e.g., Process 0.0).
+
+Step 2: Identify External Entities (Actors)
+- Identify roles that provide or receive data:
+  * Police (FIR Submitter)
+  * Evidence Collector (Field Logger)
+  * Lab Technician (Forensic Analyst)
+  * Judge/Court (Report Reviewer)
+  * Admin (System Manager)
+
+Step 3: Map Boundary Data Flows
+- Determine what enters and leaves the system:
+  * IN: Case Details, Evidence Metadata, Lab Results, Login Credentials.
+  * OUT: Case Status, Forensic Dossiers, Notifications, Audit Logs.
+
+Step 4: Verification
+- Ensure NO Data Stores (databases) are visible at this level.
+- Ensure every entity has at least one flow connected to the central process.
+
+--------------------------------------------------------------------------------
+3. LEVEL-1 DFD WORKFLOW (Functional Decomposition)
+--------------------------------------------------------------------------------
+Goal: Break the system into internal functional modules and data storage.
+
+Step 1: Decompose the Central Process
+- Break "Process 0.0" into 3-5 major sub-processes:
+  1.1 User Auth & Access Control
+  1.2 Case Registration & Tracking
+  1.3 Evidence Analysis & Diagnostics
+  1.4 Report Generation & Secure Storage
+
+Step 2: Introduce Data Stores
+- Identify where data stays "at rest":
+  * D1: User Records (Accounts/Roles)
+  * D2: Case Evidence Registry (The core repository)
+  * D3: AI Analysis Logs (Llama results/Insights)
+
+Step 3: Define Internal Data Flows
+- Trace data movement between processes and stores:
+  * Example: Lab Result -> Process 1.3 -> D3 (Store Result) -> Process 1.4.
+
+Step 4: The "Balancing" Check
+- CRITICAL: All data flows that entered/left the system in Level-0 MUST 
+  exist in Level-1. No new external flows should appear without a source.
+
+--------------------------------------------------------------------------------
+4. PRACTICAL EXAMPLE FOR FORENSIC PLATFORM
+--------------------------------------------------------------------------------
+[Level-0 Example]:
+Police ----(Case Details)----> [ Forensic System ] ----(Case Status)----> Police
+
+[Level-1 Example]:
+Police ----(Case Details)----> [ 1.2 Register Case ] ----(Write)----> [ D2: Case DB ]
+[ D2: Case DB ] ----(Read)----> [ 1.3 Analyze Evidence ] <---(Results)--- Lab Tech
+[ 1.3 Analyze Evidence ] ----(Save)----> [ D3: AI Insights ]

@@ -9,12 +9,12 @@ const caseSchema = new mongoose.Schema({
     description: { type: String, required: true },
     status: {
         type: String,
-        default: "OPEN",
-        enum: ["OPEN", "COLLECTED", "SENT_TO_LAB", "ANALYZED", "REPORT_READY", "UNDER_INVESTIGATION", "FILED_IN_COURT", "CLOSED"]
+        default: "LOGGED",
+        enum: ["LOGGED", "COLLECTED", "SENT_TO_LAB", "ANALYZED", "REPORT_READY", "UNDER_INVESTIGATION", "FILED_IN_COURT", "CLOSED"]
     },
     firNumber: { type: String },
     suspects: [{ type: String }],
-    investigatingOfficer: { type: String },
+    investigatingOfficer: { type: String },         
     investigationNotes: { type: String },
     chargeSheet: { type: String },
     legalNotes: { type: String },
